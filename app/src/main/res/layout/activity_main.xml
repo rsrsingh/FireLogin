@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#353535"
+    android:gravity="center"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
+
+
+        <TextView
+            android:id="@+id/tt1"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="BlogFeed"
+            android:textColor="#c2c0c0"
+            android:textSize="40sp" />
+
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/input_back"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/tt1" />
+
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/pass"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_back"
+            android:hint="Passsword"
+            android:inputType="textPassword"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/email" />
+
+        <Button
+            android:id="@+id/loginbtn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_back"
+            android:text="Sign In"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/pass" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/reg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Register Here"
+        android:textColor="#c2c0c0"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

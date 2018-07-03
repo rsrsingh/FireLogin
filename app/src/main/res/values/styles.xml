@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!-- light mode theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#ffffff</item>
+        <item name="colorPrimaryDark">#181818</item>
+        <item name="colorAccent">#878787</item>
+
+
+
+        <item name="cardbackground">#ffffff</item>
+        <item name="textcolor">#252525</item>
+        <item name="viewcolor">#FF353535</item>
+        <item name="actioncolor">#ffffff</item>
+        <item name="fragBack">#ffffff</item>
+
+
+
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+    </style>
+
+    <!-- Dark mode theme. -->
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#9f9f9f</item>
+        <item name="colorPrimaryDark">#181818</item>
+        <item name="colorAccent">#878787</item>
+
+
+
+        <item name="cardbackground">#4b4b4b</item>
+        <item name="textcolor">#ffffff</item>
+        <item name="actioncolor">#333333</item>
+        <item name="viewcolor">#a9a9a9</item>
+        <item name="fragBack">#1e1e1e</item>
+
+
+
+        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+
+    </style>
+
+
+    <!-- Transition of window -->
+    <style name="WindowAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+
+
+
+</resources>
