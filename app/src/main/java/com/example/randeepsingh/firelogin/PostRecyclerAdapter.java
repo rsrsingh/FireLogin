@@ -145,6 +145,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.v("blogtest", "deleted");
+                                                    Log.v("blogtest", "deleted");
+                                                    
                                                 }
                                             });
 
