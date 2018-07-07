@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:theme="@style/AppTheme"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".addFragment">
@@ -25,7 +24,7 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:background="@android:color/white"
+            android:background="?attr/cardbackground"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/add_inner"
@@ -35,6 +34,7 @@
              <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+                 android:textColor="?attr/textcolor"
             android:text="Say something about this post..."
             android:textSize="20dp"
             android:id="@+id/add_txtv"
@@ -43,6 +43,7 @@
 
             <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
+                android:textColor="?attr/textcolor"
             app:layout_constraintTop_toBottomOf="@id/add_txtv"
             android:layout_height="wrap_content"
                 android:id="@+id/add_txt"
@@ -60,6 +61,7 @@
         android:text="Publish"
 android:background="@drawable/btn_back"
         app:layout_constraintTop_toBottomOf="@id/add_inner"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"/>
 </android.support.constraint.ConstraintLayout>

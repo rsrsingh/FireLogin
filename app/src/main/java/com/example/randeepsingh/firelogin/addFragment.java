@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,6 +55,7 @@ public class addFragment extends Fragment {
     Bitmap post_Bitmap = null;
     String fullName;
     String thumbID;
+    SharedPref sharedPref;
   //  private StorageReference mStorage;
     private FirebaseAuth mAuth;
     private String mUserid;
@@ -75,6 +74,15 @@ public class addFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        sharedPref=new SharedPref(getActivity());
+        if (sharedPref.loadNightModeState() == true) {
+            getActivity().setTheme(R.style.DarkTheme);
+        } else if (sharedPref.loadNightModeState() == false) {
+            getActivity().setTheme(R.style.AppTheme);
+        }
+
+
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
         mImageview = view.findViewById(R.id.add_image);

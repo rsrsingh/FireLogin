@@ -1,21 +1,24 @@
 package com.example.randeepsingh.firelogin;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.LoginFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -27,18 +30,26 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.w3c.dom.Comment;
+
+import java.io.ObjectInput;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,6 +62,15 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private FirebaseAuth auth;
     String userID;
     String userCheck;
+
+    private SharedPref sharedPref;
+
+
+
+
+
+
+
     //String username;
 
     //public String postID = "";
@@ -65,18 +85,23 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     @NonNull
     @Override
     public PostRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_row, parent, false);
         firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
         auth = FirebaseAuth.getInstance();
         userID = auth.getCurrentUser().getUid();
+
         return new ViewHolder(view);
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull final PostRecyclerAdapter.ViewHolder holder, final int position) {
         holder.setIsRecyclable(false);
         final String blogPostID = postList.get(position).BlogPostID;
+
 
         pd.setPostid(blogPostID);
 
@@ -104,6 +129,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.setPostImage(thumb_imageUrl);
         holder.setDescText(description_value);
 
+
+
         firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -118,10 +145,31 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
 
+holder.comments.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Intent i = new Intent(context, Comment_activity.class);
+        i.putExtra("blog_post_id", blogPostID);
+        context.startActivity(i);
+
+    }
+});
+
+
+
+
+        sharedPref = new SharedPref(context);
+
         holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(context, view);
+                Context wrapper;
+                if (sharedPref.loadNightModeState()) {
+                    wrapper = new ContextThemeWrapper(context, R.style.popUpThemeDark);
+                } else {
+                    wrapper = new ContextThemeWrapper(context, R.style.popUpThemeLight);
+                }
+                PopupMenu popupMenu = new PopupMenu(wrapper, view);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.delete_menu, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -145,8 +193,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.v("blogtest", "deleted");
-                                                    Log.v("blogtest", "deleted");
-                                                    
+
+
                                                 }
                                             });
 
@@ -206,13 +254,15 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         private ImageView imageView;
         private ImageView dotsMenu;
         private FirebaseAuth mAuth;
+        private ImageView comments;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             dotsMenu = mView.findViewById(R.id.ic_dots);
             dotsMenu.setVisibility(View.GONE);
-
+            comments = mView.findViewById(R.id.home_comment);
 
         }
 
@@ -246,7 +296,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     public void setFilter(ArrayList<Blog> newPost) {
 
-        ;
+
         postList = new ArrayList<>();
 
 
@@ -256,4 +306,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         notifyDataSetChanged();
 
     }
+
+
 }

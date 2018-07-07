@@ -4,7 +4,6 @@ package com.example.randeepsingh.firelogin;
 
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +19,7 @@ Fragment fragment=null;
 
 
 
-           fragment=Accreg_one.newInstance();
+           fragment= Accreg_one.newInstance();
             FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.Accreg_frame,fragment);
             fragmentTransaction.commit();

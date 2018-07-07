@@ -2,7 +2,7 @@ package com.example.randeepsingh.firelogin;
 
 import java.util.Date;
 
-public class Blog extends BlogPostID{
+public class Blog extends com.example.randeepsingh.firelogin.BlogPostID {
 
     private String   description_value,thumb_imageUrl,full_name, thumb_id;
     private Date Time_stamp;

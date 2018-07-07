@@ -1,23 +1,17 @@
 package com.example.randeepsingh.firelogin;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,21 +20,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import android.widget.Toast;
 
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -53,7 +43,6 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
     private RecyclerView recyclerView;
     private ArrayList<Blog> postList;
     SharedPref sharedPref;
-
 
 
     private ProgressBar progressBar;
@@ -76,18 +65,14 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        sharedPref=new SharedPref(getActivity());
+        sharedPref = new SharedPref(getActivity());
 
+        if (sharedPref.loadNightModeState() == true) {
+            getActivity().setTheme(R.style.DarkTheme);
+        } else if (sharedPref.loadNightModeState() == false) {
+            getActivity().setTheme(R.style.AppTheme);
+        }
 
-
-
-        // Inflate the layout for this fragment
-        // create ContextThemeWrapper from the original Activity Context with the custom theme
-
-        // clone the inflater using the ContextThemeWrapper
-
-
-        // inflate the layout using the cloned inflater, not default inflater
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -101,9 +86,6 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
         postList = new ArrayList<>();
 
 
-
-
-
         recyclerView = view.findViewById(R.id.home_view);
         postRecyclerAdapter = new PostRecyclerAdapter(postList);
         progressBar = view.findViewById(R.id.home_progress);
@@ -113,17 +95,10 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
         auth = FirebaseAuth.getInstance();
 
 
-
-if(sharedPref.loadNightModeState()==true){
-    getActivity().setTheme(R.style.DarkTheme);
-}
-else if(sharedPref.loadNightModeState()==false){
-    getActivity().setTheme(R.style.AppTheme);
-}
-
         if (auth.getCurrentUser() != null) {
             firebaseFirestore = FirebaseFirestore.getInstance();
         }
+
 
         firebaseFirestore.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -147,8 +122,6 @@ else if(sharedPref.loadNightModeState()==false){
 
             }
         });
-
-
 
 
         // inflate the layout using the cloned inflater, not default inflater
@@ -180,7 +153,7 @@ else if(sharedPref.loadNightModeState()==false){
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        MenuItem menuItem = menu.findItem(R.id.action_search);
+            MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(this);
 
