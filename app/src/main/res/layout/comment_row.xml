@@ -10,21 +10,23 @@
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?attr/cardbackground">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cmntRow_prof"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/reg_profile" />
 
         <TextView
             android:id="@+id/cmntRow_username"
             android:layout_width="0dp"
+            android:textColor="?attr/textcolor"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="Username"
-            android:textSize="25dp"
+            android:textSize="15dp"
             app:layout_constraintLeft_toRightOf="@id/cmntRow_prof"
             app:layout_constraintRight_toLeftOf="@id/cmntRow_delete" />
 
@@ -34,17 +36,19 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="This is a sample comment"
-            android:textSize="20dp"
+            android:textColor="?attr/textcolor"
+            android:textSize="10dp"
             app:layout_constraintLeft_toRightOf="@id/cmntRow_prof"
             app:layout_constraintRight_toLeftOf="@id/cmntRow_delete"
             app:layout_constraintTop_toBottomOf="@id/cmntRow_username" />
 
         <ImageView
             android:id="@+id/cmntRow_delete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/baseline_delete_black_48"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            android:tint="?attr/textcolor"/>
 
     </android.support.constraint.ConstraintLayout>
 

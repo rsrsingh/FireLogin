@@ -99,8 +99,8 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
             firebaseFirestore = FirebaseFirestore.getInstance();
         }
 
-
-        firebaseFirestore.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Query query=firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
+      query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -153,7 +153,7 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-            MenuItem menuItem = menu.findItem(R.id.action_search);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(this);
 

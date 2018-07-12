@@ -58,6 +58,8 @@ public class profileFragment extends Fragment {
     Toolbar toolbar;
 
 
+
+
     public profileFragment() {
         // Required empty public constructor
     }
@@ -73,7 +75,10 @@ public class profileFragment extends Fragment {
         } else if (sharedPref.loadNightModeState() == false) {
             getActivity().setTheme(R.style.AppTheme);
         }
+
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+
 
         toolbar = view.findViewById(R.id.prof_toolbar);
 
@@ -89,9 +94,9 @@ public class profileFragment extends Fragment {
         currentUser = mAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+
+
         mImage = view.findViewById(R.id.prof_pic);
-
-
         mCover = view.findViewById(R.id.prof_mCover);
         spinner = (ProgressBar) view.findViewById(R.id.progressBar1);
         mNametxt = (TextView) view.findViewById(R.id.prof_name);
@@ -157,10 +162,7 @@ public class profileFragment extends Fragment {
 
                 break;
             case R.id.action_settings:
-                startActivity(new Intent(getActivity(), AccountReg.class));
-                break;
-            case R.id.action_themes:
-                startActivity(new Intent(getActivity(), ThemeActivity.class));
+                startActivity(new Intent(getActivity(), SettingsMain.class));
                 break;
         }
 

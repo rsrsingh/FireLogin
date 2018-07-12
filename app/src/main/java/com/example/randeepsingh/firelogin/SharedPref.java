@@ -20,7 +20,17 @@ public class SharedPref {
     {
         Boolean state= sharedPreferences.getBoolean("NightMode",false);
         return state;
-
     }
+    public void setRegModeState(Boolean state){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("Resgistration", state);
+        editor.commit();
+    }
+    public  Boolean loadRegModeState()
+    {
+        Boolean state= sharedPreferences.getBoolean("NightMode",false);
+        return state;
+    }
+
 
 }

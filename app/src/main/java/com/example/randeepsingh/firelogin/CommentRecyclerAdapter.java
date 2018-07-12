@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         //final String cmntID = commentList.get(position).BlogPostID;
 
 
+        //profile pic and fullname retrieve
         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -82,6 +84,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
 
                     holder.setProfImage(profileUrl);
                     holder.setUsername(userData);
+
                     Log.v("cmnt", "fullname: " + userData + "  Comment value: " + message);
 
                     //  Log.v("cmntms",""+message);
@@ -122,7 +125,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
                 firebaseFirestore.collection("Posts").document(blogPostID).collection("Comments").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.dismiss();
+
                         commentList.remove(position);
                         notifyDataSetChanged();
 
@@ -130,7 +133,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
 
                     }
                 });
-
+                progressDialog.dismiss();
 
             }
         });
@@ -159,10 +162,12 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
 
         public ViewHolder(View itemView) {
             super(itemView);
-            Log.v("bgid", "Viewholder called");
             mView = itemView;
+
+            Log.v("bgid", "Viewholder called");
             deleteView = mView.findViewById(R.id.cmntRow_delete);
             deleteView.setVisibility(View.GONE);
+
         }
 
         public void setProfImage(String profileImage) {

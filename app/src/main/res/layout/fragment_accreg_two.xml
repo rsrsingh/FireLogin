@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Accreg_two">
 <android.support.constraint.ConstraintLayout
@@ -19,24 +18,38 @@
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"/>
 
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/Accreg2_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        android:title="Cover Image"
+        android:titleTextColor="?attr/textcolor"
+        android:background="?attr/actioncolor"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/Accreg3_view"
+        android:background="?attr/viewcolor"/>
+
     <ImageView
         android:id="@+id/Accreg2_cover"
         android:layout_width="match_parent"
-        android:layout_height="320dp"
+        android:layout_height="259dp"
         android:scaleType="fitXY"
-       />
+        app:layout_constraintTop_toBottomOf="@id/Accreg2_toolbar" />
+
     <de.hdodenhof.circleimageview.CircleImageView
 
         android:id="@+id/Accreg2_profile"
-        android:layout_width="297dp"
-        android:layout_height="300dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="210dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Accreg2_cover"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/Accreg2_cover" />
 
     <Button
         android:layout_width="wrap_content"
@@ -50,6 +63,21 @@
         android:layout_marginBottom="10dp"
 
         />
+
+    <Button
+        android:id="@+id/AccReg2_update"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="25dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:background="@drawable/btn_back"
+        android:text="Update"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>
 </FrameLayout>

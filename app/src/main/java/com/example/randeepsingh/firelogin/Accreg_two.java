@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +20,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -29,6 +35,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -45,16 +53,18 @@ public class Accreg_two extends Fragment {
     String mUserid;
     Bitmap cover_Bitmap = null;
     Uri coverImageUri = null;
+    Fragment fragment=null;
     private StorageReference coverImgRef;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     private StorageReference mStorageRef;
-    Uri cover_downloadUrl=null;
-    Button btnNext;
+    Uri cover_downloadUrl = null;
+    Button btnNext, btnUpdate;
     Bundle bundle2;
     Bundle bundle;
     CircleImageView circleImageView;
-
+    SharedPref sharedPref;
+    FirebaseFirestore firebaseFirestore;
 
     public Accreg_two() {
         // Required empty public constructor
@@ -64,51 +74,76 @@ public class Accreg_two extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_accreg_two, container, false);
-        bundle = this.getArguments();
-        thumb_url = bundle.get("thumb_url").toString();
+        sharedPref = new SharedPref(getActivity());
 
-        circleImageView = view.findViewById(R.id.Accreg2_profile);
-        progressBar=view.findViewById(R.id.accreg2_progress);
-
-
-        progressBar.setVisibility(view.VISIBLE);
-        try {
-
-            Glide.with(getActivity()).load(thumb_url).into(circleImageView);
-
-        } catch (Exception e) {
-
+        if (sharedPref.loadNightModeState() == true) {
+            getActivity().setTheme(R.style.DarkTheme);
+        } else if (sharedPref.loadNightModeState() == false) {
+            getActivity().setTheme(R.style.AppTheme);
         }
 
+        // Inflate the layout for this fragment
+        final View view = inflater.inflate(R.layout.fragment_accreg_two, container, false);
 
 
+        firebaseFirestore = FirebaseFirestore.getInstance();
         imageView = view.findViewById(R.id.Accreg2_cover);
+        imageView.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
         mUserid = mAuth.getCurrentUser().getUid();
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Cover_images");
         mStorageRef = FirebaseStorage.getInstance().getReference();
         btnNext = view.findViewById(R.id.AccReg2_btn);
+        btnUpdate = view.findViewById(R.id.AccReg2_update);
         bundle2 = new Bundle();
         btnNext.setVisibility(view.GONE);
+        btnUpdate.setVisibility(View.GONE);
+        circleImageView = view.findViewById(R.id.Accreg2_profile);
+        circleImageView.setVisibility(View.GONE);
+        bundle = this.getArguments();
+        progressBar = view.findViewById(R.id.accreg2_progress);
 
 
-        //wait fot 2 sec
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                // yourMethod();
-                imageView.setImageResource(R.drawable.add_cover);
+        progressBar.setVisibility(view.VISIBLE);
+
+        firebaseFirestore.collection("Users").document(mUserid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()) {
+                    String profID = task.getResult().getString("thumb_id");
+                    String coverID=task.getResult().getString("cover_id");
+                    Glide.with(getActivity()).load(profID).into(circleImageView);
+                    Glide.with(getActivity()).load(coverID).into(imageView);
+                    imageView.setVisibility(View.VISIBLE);
+                    circleImageView.setVisibility(View.VISIBLE);
+
+                    progressBar.setVisibility(View.GONE);
 
 
-                btnNext.setVisibility(view.VISIBLE);
-progressBar.setVisibility(view.GONE);
+                    btnUpdate.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    btnNext.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.VISIBLE);
+                    imageView.setImageResource(R.drawable.add_cover);
+                    thumb_url = bundle.get("thumb_url").toString();
+
+
+                    try {
+
+                        Glide.with(getActivity()).load(thumb_url).into(circleImageView);
+                        circleImageView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+
+
+                    } catch (Exception e) {
+
+                    }
+
+                }
 
             }
-        }, 2300);
-//end wait
-
+        });
 
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -124,10 +159,9 @@ progressBar.setVisibility(view.GONE);
                 if (coverImageUri == null) {
                     Toast.makeText(getActivity(), "Please upload a cover picture", Toast.LENGTH_SHORT).show();
                 }
-                if(cover_downloadUrl==null){
+                if (cover_downloadUrl == null) {
                     Toast.makeText(getActivity(), "Please wait...", Toast.LENGTH_SHORT).show();
-                }
-                else if(cover_downloadUrl != null){
+                } else if (cover_downloadUrl != null) {
                     Accreg_three accreg_three = new Accreg_three();
                     accreg_three.setArguments(bundle2);
                     getFragmentManager().beginTransaction().replace(R.id.Accreg_frame, accreg_three).commit();
@@ -135,6 +169,35 @@ progressBar.setVisibility(view.GONE);
             }
         });
 
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (coverImageUri == null) {
+                    Toast.makeText(getActivity(), "Please upload a display picture", Toast.LENGTH_SHORT).show();
+                }
+                if(cover_downloadUrl==null){
+                    Toast.makeText(getActivity(), "Please wait...", Toast.LENGTH_SHORT).show();
+                }
+                else if(cover_downloadUrl != null) {
+
+                    Map update = new HashMap();
+                    update.put("cover_id", cover_downloadUrl.toString());
+                    firebaseFirestore.collection("Users").document(mUserid).update(update).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            Toast.makeText(getActivity(), "Updated Succcessfully", Toast.LENGTH_SHORT).show();
+                            fragment=SettingsFragment.newInstance();
+                            FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.settingsMain_frame,fragment);
+                            ft.commit();
+
+                        }
+                    });
+                }
+
+
+            }
+        });
 
 
         return view;

@@ -26,6 +26,7 @@
         />
     <Switch
         android:layout_marginLeft="5dp"
+        android:padding="10dp"
         android:id="@+id/theme_switch"
         android:textColor="?attr/textcolor"
         app:layout_constraintTop_toBottomOf="@id/theme_view"

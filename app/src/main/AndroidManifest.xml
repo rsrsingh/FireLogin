@@ -35,7 +35,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ThemeActivity" />
-        <activity android:name=".Comment_activity"></activity>
+        <activity android:name=".Comment_activity" />
+        <activity android:name=".SettingsMain"></activity>
     </application>
 
 </manifest>

@@ -1,54 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profileFragment">
+    tools:context=".profileFragment"
+    >
     <!-- TODO: Update blank fragment layout -->
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/fragBack">
+        android:background="?attr/fragBack"
+        >
+
+
+        <ImageView
+            android:id="@+id/prof_mCover"
+            android:layout_width="match_parent"
+            android:layout_height="259dp"
+            android:scaleType="centerCrop"
+           
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+             />
 
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/prof_toolbar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="?attr/actioncolor"
+            android:background="#17000000"
+
             app:titleTextColor="?attr/textcolor"
 
+
             ></android.support.v7.widget.Toolbar>
-
-
-        <View
-            android:id="@+id/profile_view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#bababa"
-            app:layout_constraintTop_toBottomOf="@id/prof_toolbar" />
-
-
-        <ImageView
-            android:id="@+id/prof_mCover"
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintTop_toBottomOf="@id/profile_view" />
 
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/prof_pic"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
 
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="240dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/prof_mCover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/prof_mCover" />
 
         <TextView
             android:id="@+id/prof_name"
@@ -80,4 +79,4 @@
     </android.support.constraint.ConstraintLayout>
 
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

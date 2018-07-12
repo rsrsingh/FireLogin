@@ -12,6 +12,7 @@ public class AccountReg extends AppCompatActivity {
 
 
 Fragment fragment=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

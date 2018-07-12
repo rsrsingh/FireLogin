@@ -39,7 +39,7 @@ public class Comment_activity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     String userID;
-
+SharedPref sharedPref;
 
     ImageView cmntpost;
     EditText cmntValue;
@@ -52,6 +52,14 @@ public class Comment_activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = new SharedPref(this);
+
+        if (sharedPref.loadNightModeState() == true) {
+            this.setTheme(R.style.DarkTheme);
+
+        } else {
+            this.setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_activity);
 
@@ -60,8 +68,8 @@ public class Comment_activity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         commentList = new ArrayList<>();
         userID = auth.getCurrentUser().getUid();
-        progressBar = findViewById(R.id.comment_progress);
-        progressBar.setVisibility(View.VISIBLE);
+       progressBar = findViewById(R.id.comments_progress);
+
         cmntpost = findViewById(R.id.comment_send);
         cmntValue = findViewById(R.id.comment_ed1);
         // Log.v("bgid",""+blogPostID);
@@ -69,6 +77,7 @@ public class Comment_activity extends AppCompatActivity {
 
         // Log.v("bgidd",""+blogPostID);
         cRecyclerView = findViewById(R.id.comment_recycler);
+        progressBar.setVisibility(View.VISIBLE);
 
 
         //commments Retreving
@@ -83,19 +92,21 @@ public class Comment_activity extends AppCompatActivity {
                             String cmntID = doc.getDocument().getId();
                             Comments comments = doc.getDocument().toObject(Comments.class).withID(cmntID);
                             commentList.add(comments);
-                            progressBar.setVisibility(View.GONE);
+                          //  progressBar.setVisibility(View.GONE);
 
                             Log.v("bgid", "query called");
                         }
+                        commentRecyclerAdapter = new CommentRecyclerAdapter(commentList, blogPostID);
+                        cRecyclerView.setLayoutManager(new LinearLayoutManager(Comment_activity.this));
+                        cRecyclerView.setAdapter(commentRecyclerAdapter);
 
                     }
 
                 }
+                progressBar.setVisibility(View.GONE);
             }
         });
-        commentRecyclerAdapter = new CommentRecyclerAdapter(commentList, blogPostID);
-        cRecyclerView.setLayoutManager(new LinearLayoutManager(Comment_activity.this));
-        cRecyclerView.setAdapter(commentRecyclerAdapter);
+
 
 
         Log.v("bgid", "recyclerview set");
