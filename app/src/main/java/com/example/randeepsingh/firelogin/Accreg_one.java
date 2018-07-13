@@ -1,6 +1,7 @@
 package com.example.randeepsingh.firelogin;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,8 +26,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,16 +59,16 @@ public class Accreg_one extends Fragment {
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth mAuth;
     String mUserid;
-    Fragment fragment=null;
-    Bitmap thumb_Bitmap=null;
-    Uri mainImageUri=null;
+    Fragment fragment = null;
+    Bitmap thumb_Bitmap = null;
+    Uri mainImageUri = null;
     private StorageReference thumbImgRef;
-    Uri thumb_downloadUrl=null;
-    private Button btnNext,btnUpdate;
+    Uri thumb_downloadUrl = null;
+    private Button btnNext, btnUpdate;
     Bundle bundle;
     FirebaseFirestore mfirebaseFirestore;
     SharedPref sharedPref;
-ProgressBar progressBar;
+    ProgressBar progressBar;
 
     public Accreg_one() {
         // Required empty public constructor
@@ -84,43 +89,41 @@ ProgressBar progressBar;
 
 
         final View view = inflater.inflate(R.layout.fragment_accreg_one, container, false);
-        sharedPref=new SharedPref(getActivity());
+        sharedPref = new SharedPref(getActivity());
         circleImageView = view.findViewById(R.id.Accreg1_profile);
         circleImageView.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mUserid = mAuth.getCurrentUser().getUid();
-        thumbImgRef=FirebaseStorage.getInstance().getReference().child("Thumb_images");
-        btnNext=view.findViewById(R.id.AccReg1_btn);
-        btnUpdate=view.findViewById(R.id.AccReg1_update);
+        thumbImgRef = FirebaseStorage.getInstance().getReference().child("Thumb_images");
+        btnNext = view.findViewById(R.id.AccReg1_btn);
+        btnUpdate = view.findViewById(R.id.AccReg1_update);
         btnUpdate.setVisibility(View.GONE);
         btnNext.setVisibility(View.GONE);
-        progressBar=view.findViewById(R.id.AccReg1_progress);
+        progressBar = view.findViewById(R.id.AccReg1_progress);
         progressBar.setVisibility(View.VISIBLE);
-        mfirebaseFirestore=FirebaseFirestore.getInstance();
-        bundle=new Bundle();
+        mfirebaseFirestore = FirebaseFirestore.getInstance();
+        bundle = new Bundle();
 
 
         firebaseFirestore.collection("Users").document(mUserid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-           if(task.getResult().exists()) {
-               btnUpdate.setVisibility(View.VISIBLE);
-               String thumbID=task.getResult().getString("thumb_id");
-               Glide.with(getActivity()).load(thumbID).into(circleImageView);
-               progressBar.setVisibility(View.GONE);
-               circleImageView.setVisibility(View.VISIBLE);
-           }
-           else {
-               btnNext.setVisibility(View.VISIBLE);
-               progressBar.setVisibility(View.GONE);
-               circleImageView.setVisibility(View.VISIBLE);
-           }
+                if (task.getResult().exists()) {
+                    btnUpdate.setVisibility(View.VISIBLE);
+                    String thumbID = task.getResult().getString("thumb_id");
+                    Glide.with(getActivity()).load(thumbID).into(circleImageView);
+                    progressBar.setVisibility(View.GONE);
+                    circleImageView.setVisibility(View.VISIBLE);
+                } else {
+                    btnNext.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    circleImageView.setVisibility(View.VISIBLE);
+                }
 
             }
         });
-
 
 
         circleImageView.setOnClickListener(new View.OnClickListener() {
@@ -136,23 +139,53 @@ ProgressBar progressBar;
                 if (mainImageUri == null) {
                     Toast.makeText(getActivity(), "Please upload a display picture", Toast.LENGTH_SHORT).show();
                 }
-                if(thumb_downloadUrl==null){
+                if (thumb_downloadUrl == null) {
                     Toast.makeText(getActivity(), "Please wait...", Toast.LENGTH_SHORT).show();
-                }
-                else if(thumb_downloadUrl != null) {
-                    Map update=new HashMap();
-                    update.put("thumb_id",thumb_downloadUrl.toString());
-                 firebaseFirestore.collection("Users").document(mUserid).update(update).addOnCompleteListener(new OnCompleteListener() {
-                     @Override
-                     public void onComplete(@NonNull Task task) {
-                         Toast.makeText(getActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
-                         fragment=SettingsFragment.newInstance();
-                         FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                         ft.replace(R.id.settingsMain_frame,fragment);
-                         ft.commit();
-
-                     }
-                 });
+                } else if (thumb_downloadUrl != null) {
+                    final Map update = new HashMap();
+                    update.put("thumb_id", thumb_downloadUrl.toString());
+                    firebaseFirestore.collection("Users").document(mUserid).update(update).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            Log.v("updateTest", "on complete for users");
+                            //   Toast.makeText(getActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                            fragment = SettingsFragment.newInstance();
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.settingsMain_frame, fragment);
+                            ft.commit();
+                            firebaseFirestore.collection("Posts").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                                    Log.v("updateTest", "snapshot for Posts");
+                                    if (!documentSnapshots.isEmpty()) {
+                                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                            final String post_id = doc.getDocument().getId();
+                                            Log.v("updateTest", "post id: " + post_id);
+                                            firebaseFirestore.collection("Posts").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.getResult().exists()) {
+                                                        Log.v("updateTest", "on complete inside posts");
+                                                        String user_ID = task.getResult().getString("User_id");
+                                                        if (mUserid.equals(user_ID)) {
+                                                            firebaseFirestore.collection("Posts").document(post_id).update(update).addOnCompleteListener(new OnCompleteListener() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        Log.v("updateTest", "on complete for update posts");
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
@@ -164,10 +197,9 @@ ProgressBar progressBar;
                 if (mainImageUri == null) {
                     Toast.makeText(getActivity(), "Please upload a display picture", Toast.LENGTH_SHORT).show();
                 }
-                if(thumb_downloadUrl==null){
+                if (thumb_downloadUrl == null) {
                     Toast.makeText(getActivity(), "Please wait...", Toast.LENGTH_SHORT).show();
-                }
-                else if(thumb_downloadUrl != null) {
+                } else if (thumb_downloadUrl != null) {
                     Accreg_two accreg_two = new Accreg_two();
                     accreg_two.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(R.id.Accreg_frame, accreg_two).commit();
@@ -204,44 +236,42 @@ ProgressBar progressBar;
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == getActivity().RESULT_OK) {
 
-            mainImageUri=result.getUri();
-            Log.v("mkeyreg","mianuri= "+mainImageUri);
-          //  circleImageView.setImageURI(mainImageUri);
+                mainImageUri = result.getUri();
+                Log.v("mkeyreg", "mianuri= " + mainImageUri);
+                //  circleImageView.setImageURI(mainImageUri);
 
-                File thumb_filePathUri=new File(mainImageUri.getPath());
-                try{
-                    thumb_Bitmap=new Compressor(getActivity()).setMaxWidth(200).setMaxHeight(200).setQuality(50).compressToBitmap(thumb_filePathUri);
-                }
-                catch (IOException e){
+                File thumb_filePathUri = new File(mainImageUri.getPath());
+                try {
+                    thumb_Bitmap = new Compressor(getActivity()).setMaxWidth(200).setMaxHeight(200).setQuality(50).compressToBitmap(thumb_filePathUri);
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-                thumb_Bitmap.compress(Bitmap.CompressFormat.JPEG, 50,byteArrayOutputStream);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                thumb_Bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
                 final byte[] thumb_byte = byteArrayOutputStream.toByteArray();
 
 
-                final StorageReference thumb_filePath=thumbImgRef.child(mUserid +".jpg");
+                final StorageReference thumb_filePath = thumbImgRef.child(mUserid + ".jpg");
 
-                final ProgressDialog mprogressDialog=new ProgressDialog(getActivity());
+                final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
                 mprogressDialog.setMessage("Please wait");
                 mprogressDialog.show();
 
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        thumb_downloadUrl=taskSnapshot.getDownloadUrl();
-                        Log.v("mkey","thumb download url: "+thumb_downloadUrl);
+                        thumb_downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
 
                         circleImageView.setImageURI(mainImageUri);
-                        bundle.putString("thumb_url",thumb_downloadUrl.toString());
+                        bundle.putString("thumb_url", thumb_downloadUrl.toString());
 
 
                         mprogressDialog.dismiss();
                     }
                 });
 
-            }
-            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();
             }
@@ -249,7 +279,6 @@ ProgressBar progressBar;
     }
 
     private void updateDetails() {
-
 
 
     }

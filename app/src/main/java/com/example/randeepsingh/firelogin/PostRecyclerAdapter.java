@@ -66,11 +66,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private SharedPref sharedPref;
 
 
-
-
-
-
-
     //String username;
 
     //public String postID = "";
@@ -130,32 +125,26 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.setDescText(description_value);
 
 
-
         firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
                     userCheck = task.getResult().getString("User_id");
                     Log.v("usercheck", "" + userCheck);
-                    if (userID.equals(userCheck)) {
-                        holder.dotsMenu.setVisibility(View.VISIBLE);
-                    }
                 }
             }
         });
 
 
-holder.comments.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Intent i = new Intent(context, Comment_activity.class);
-        i.putExtra("blog_post_id", blogPostID);
-        context.startActivity(i);
+        holder.comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, Comment_activity.class);
+                i.putExtra("blog_post_id", blogPostID);
+                context.startActivity(i);
 
-    }
-});
-
-
+            }
+        });
 
 
         sharedPref = new SharedPref(context);
@@ -171,7 +160,14 @@ holder.comments.setOnClickListener(new View.OnClickListener() {
                 }
                 PopupMenu popupMenu = new PopupMenu(wrapper, view);
                 MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.delete_menu, popupMenu.getMenu());
+
+                if (userID.equals(userCheck)) {
+                    inflater.inflate(R.menu.delete_menu, popupMenu.getMenu());
+                } else {
+                    inflater.inflate(R.menu.report_menu,popupMenu.getMenu());
+                }
+
+
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -261,7 +257,6 @@ holder.comments.setOnClickListener(new View.OnClickListener() {
             super(itemView);
             mView = itemView;
             dotsMenu = mView.findViewById(R.id.ic_dots);
-            dotsMenu.setVisibility(View.GONE);
             comments = mView.findViewById(R.id.home_comment);
 
         }

@@ -9,77 +9,27 @@
 
     <FrameLayout
         android:id="@+id/acc_frame"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="?attr/fragBack"
-        app:layout_constraintBottom_toTopOf="@+id/acc_nav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
 
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/viewcolor"
-        app:layout_constraintBottom_toTopOf="@id/acc_nav" />
+    app:layout_constraintTop_toTopOf="parent"/>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/acc_nav"
-        android:layout_width="match_parent"
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/bmb"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/fragBack"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        app:bmb_buttonEnum="ham"
+        app:bmb_piecePlaceEnum="piecePlace_ham_4"
+        app:bmb_buttonPlaceEnum="buttonPlace_ham_4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        />
 
 
-        <ImageView
-            android:id="@+id/acc_home"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
-            android:src="@drawable/home_selector" />
 
-        <ImageView
-            android:id="@+id/acc_search"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
-            android:src="@drawable/search_selector"
-            app:layout_constraintLeft_toRightOf="@id/acc_home"
-            app:layout_constraintRight_toLeftOf="@id/acc_add" />
-
-        <ImageView
-            android:id="@+id/acc_add"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
-            android:src="@drawable/add_selector"
-            app:layout_constraintLeft_toRightOf="parent"
-            app:layout_constraintRight_toLeftOf="parent" />
-
-        <ImageView
-            android:id="@+id/acc_notif"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
-            android:src="@drawable/notif_selector"
-            app:layout_constraintLeft_toRightOf="@id/acc_add"
-            app:layout_constraintRight_toLeftOf="@id/acc_prof" />
-
-
-        <ImageView
-            android:id="@+id/acc_prof"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
-            android:src="@drawable/account_selector"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/acc_notif" />
-
-    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

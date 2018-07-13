@@ -105,6 +105,7 @@ public class profileFragment extends Fragment {
         spinner.setVisibility(View.VISIBLE);
 
 
+
         firebaseFirestore.collection("Users").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -121,6 +122,7 @@ public class profileFragment extends Fragment {
                         Glide.with(profileFragment.this).load(coverUrl).into(mCover);
 
                         spinner.setVisibility(View.GONE);
+
                     } catch (Exception e) {
                         Log.e("mkey", " " + e + "  " + mProfid);
                     }
