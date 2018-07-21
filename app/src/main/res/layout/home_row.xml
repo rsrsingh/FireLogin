@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/fragBack"
-    >
+    android:background="?attr/fragBack">
 
 
     <android.support.v7.widget.CardView
@@ -15,18 +14,16 @@
         android:background="?attr/fragBack">
 
 
-
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/homeRow_cons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/cardbackground"
-            android:id="@+id/homeRow_cons">
+            android:background="?attr/cardbackground">
 
             <ImageView
                 android:id="@+id/homeRow_post"
                 android:layout_width="match_parent"
                 android:layout_height="320dp"
-
                 android:layout_marginTop="1dp"
                 android:adjustViewBounds="false"
                 android:scaleType="centerCrop"
@@ -36,22 +33,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/homeRow_caption"
-                android:layout_width="wrap_content"
 
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:text="Caption"
-                android:textColor="?attr/textcolor"
-                android:textSize="20dp"
-                app:layout_constraintLeft_toLeftOf="parent"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@drawable/image_gradient_top"
+                app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="80dp"
                 android:src="@drawable/image_gradient"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,15 +53,27 @@
 
             <ImageView
                 android:id="@+id/ic_dots"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+
+                android:src="@drawable/baseline_delete_black_48"
+                android:tint="#ffffff"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/report_dots"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="8dp"
-
                 android:src="@drawable/ic_dots"
-                android:tint="?attr/textcolor"
+                android:tint="#ffffff"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/homeRow_prof"
@@ -105,24 +110,31 @@
                 app:layout_constraintTop_toBottomOf="@+id/homeRow_username" />
 
 
-
-                <ImageView
-                    android:id="@+id/home_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="8dp"
-android:tint="#ffffff
+            <ImageView
+                android:id="@+id/home_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="5dp"
+                android:background="#5f000000"
+                android:src="@drawable/baseline_comment_black_48"
+                android:tint="#ffffff
 "
-                    android:layout_marginRight="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:background="#5f000000"
-                    android:src="@drawable/baseline_comment_black_48" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
 
-
-
-
+            <View
+                android:id="@+id/homeRow_view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#ffffff"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
+
     </android.support.v7.widget.CardView>
+
+
 </android.support.constraint.ConstraintLayout>

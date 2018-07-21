@@ -20,9 +20,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -130,9 +133,27 @@ username.setVisibility(view.GONE);
         mfirebaseFirestore.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                progressDialog.dismiss();
-                startActivity(new Intent(getActivity(),AccountMain.class));
-                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
+
+
+                        String tokenID= FirebaseInstanceId.getInstance().getToken();
+                        String user_id=mAuth.getCurrentUser().getUid();
+                        Log.v("tokenID"," "+tokenID+"  "+user_id);
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("token_id",tokenID);
+                        mfirebaseFirestore.collection("Users").document(user_id).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                                progressDialog.dismiss();
+                                startActivity(new Intent(getActivity(),AccountMain.class));
+                                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+
+
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

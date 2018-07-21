@@ -1,9 +1,12 @@
 package com.example.randeepsingh.firelogin;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.view.ContextThemeWrapper;
@@ -63,6 +66,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     String userID;
     String userCheck;
 
+
+
+
+
     private SharedPref sharedPref;
 
 
@@ -101,6 +108,42 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         pd.setPostid(blogPostID);
 
 
+        firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()) {
+                    userCheck = task.getResult().getString("User_id");
+                    if (userID.equals(userCheck)) {
+                        holder.dotsMenu.setVisibility(View.VISIBLE);
+
+                    } else if (!userID.equals(userCheck)) {
+                        holder.reportMenu.setVisibility(View.VISIBLE);
+                    }
+
+                    Log.v("usercheck", "" + userCheck);
+                }
+            }
+        });
+        //hiding reported posts
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(userID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    Log.e("reported posts ", "reported post " + blogPostID + " by " + userID);
+                    try {
+                        holder.mView.setVisibility(View.GONE);
+                        postList.remove(position);
+                        postList.remove(position);
+                    } catch (IndexOutOfBoundsException exception) {
+                        Log.e("report hide", " post remove exception " + exception.getMessage());
+                    }
+                } else {
+                    holder.mView.setVisibility(View.VISIBLE);
+                    Log.e("reported posts ", "no post exists");
+                }
+            }
+        });
+
         final String description_value = postList.get(position).getDescription_value();
 
         final String thumb_imageUrl = postList.get(position).getThumb_imageUrl();
@@ -122,18 +165,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         holder.setTime(nowMMDDYYYY);
         holder.setPostImage(thumb_imageUrl);
-        holder.setDescText(description_value);
-
-
-        firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    userCheck = task.getResult().getString("User_id");
-                    Log.v("usercheck", "" + userCheck);
-                }
-            }
-        });
 
 
         holder.comments.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +172,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             public void onClick(View view) {
                 Intent i = new Intent(context, Comment_activity.class);
                 i.putExtra("blog_post_id", blogPostID);
+                i.putExtra("postUserID",userCheck);
                 context.startActivity(i);
 
             }
@@ -149,75 +181,35 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         sharedPref = new SharedPref(context);
 
-        holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
+
+        //report and block
+        holder.reportMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.v("menucheck", "report clicked");
+
                 Context wrapper;
                 if (sharedPref.loadNightModeState()) {
                     wrapper = new ContextThemeWrapper(context, R.style.popUpThemeDark);
                 } else {
                     wrapper = new ContextThemeWrapper(context, R.style.popUpThemeLight);
                 }
-                PopupMenu popupMenu = new PopupMenu(wrapper, view);
+
+                final PopupMenu popupMenu = new PopupMenu(wrapper, view);
                 MenuInflater inflater = popupMenu.getMenuInflater();
-
-                if (userID.equals(userCheck)) {
-                    inflater.inflate(R.menu.delete_menu, popupMenu.getMenu());
-                } else {
-                    inflater.inflate(R.menu.report_menu,popupMenu.getMenu());
-                }
-
+                inflater.inflate(R.menu.report_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-
-                            case R.id.delete:
-                                Log.v("blogid", "" + blogPostID);
-                                final ProgressDialog progressDialog = new ProgressDialog(context);
-                                progressDialog.setMessage("Deleting...");
-                                progressDialog.show();
-                                firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.getResult().exists()) {
-                                            String url = task.getResult().getString("thumb_imageUrl");
-                                            final FirebaseStorage postsImageRef = FirebaseStorage.getInstance();
-                                            StorageReference photoRef = postsImageRef.getReferenceFromUrl(url);
-                                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.v("blogtest", "deleted");
-
-
-                                                }
-                                            });
-
-                                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.v("blogtest", "post deleted");
-                                                    Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                                                    postList.remove(position);
-                                                    notifyDataSetChanged();
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.v("deletion", "failed to delete post from database");
-
-                                        Toast.makeText(context, "Failed to delete post", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                            case R.id.report_btnReport:
+                          userReport(userID,position,blogPostID);
+                                break;
+                            case R.id.report_btnblock:
+                              userBlock(userID,userCheck);
                                 break;
                         }
-
 
                         return false;
                     }
@@ -225,6 +217,136 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 popupMenu.show();
             }
         });
+
+        holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.v("blogid", "" + blogPostID);
+                final ProgressDialog progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Deleting...");
+                progressDialog.show();
+                firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.getResult().exists()) {
+                            String url = task.getResult().getString("thumb_imageUrl");
+                            final FirebaseStorage postsImageRef = FirebaseStorage.getInstance();
+                            StorageReference photoRef = postsImageRef.getReferenceFromUrl(url);
+                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.v("blogtest", "deleted");
+
+
+                                }
+                            });
+
+                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.v("blogtest", "post deleted");
+                                    Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                                    postList.remove(position);
+                                    notifyDataSetChanged();
+                                    progressDialog.dismiss();
+                                }
+                            });
+
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.v("deletion", "failed to delete post from database");
+
+                        Toast.makeText(context, "Failed to delete post", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
+        });
+
+    }
+
+    private void userBlock(final String userID, final String userCheck) {
+
+        final AlertDialog alertDialog;
+        alertDialog = new AlertDialog.Builder(context)
+                .setTitle("Caution!!")
+                .setMessage("Are you sure you want to block this user?")
+                .setPositiveButton("Block", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("block ", "block clicked");
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("Time_stamp", FieldValue.serverTimestamp());
+                       firebaseFirestore.collection("Users").document(userID).collection("Block").document(userCheck).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    notifyDataSetChanged();
+                                    Toast.makeText(context, "Blocked..", Toast.LENGTH_SHORT).show();
+                                    Log.v("block ", "user " + userID + " blocked " + userCheck);
+                                } else {
+                                    Log.v("block ", "block error");
+                                }
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.v("block", "No clicked");
+                    }
+                }).show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFFF0000);
+
+
+    }
+
+    private void userReport(final String userID, final int position,final  String blogPostID) {
+
+        final AlertDialog alertDialog;
+
+        if (sharedPref.loadNightModeState()) {
+            new AlertDialog.Builder(context, R.style.DarkTheme);
+        } else {
+            new AlertDialog.Builder(context, R.style.AppTheme);
+        }
+        alertDialog= new AlertDialog.Builder(context).setTitle("Caution:").setMessage("Are you sure you want to report this post?").setPositiveButton("Report", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("Time_stamp", FieldValue.serverTimestamp());
+                firebaseFirestore.collection("Posts/" + blogPostID + "/Report").document(userID).set(map)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    try {
+                                        postList.remove(position);
+                                        postList.remove(position);
+                                        notifyDataSetChanged();
+                                    } catch (IndexOutOfBoundsException e) {
+                                        Log.e("Reported", "Exception while removing list " + e.getMessage());
+                                    }
+                                    Log.e("Reported", "Post " + blogPostID + " reported by " + userID);
+                                    Log.e("report", "Report clicked");
+                                    Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.e("report", "error: " + task.getException().getMessage());
+                                }
+                            }
+                        });
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Log.e("report", "No clicked");
+            }
+        }).show();
 
     }
 
@@ -245,10 +367,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
-        private TextView descView, userView, dateView;
+        private TextView userView, dateView;
         private CircleImageView profile;
         private ImageView imageView;
-        private ImageView dotsMenu;
+        private ImageView dotsMenu, reportMenu;
         private FirebaseAuth mAuth;
         private ImageView comments;
 
@@ -258,7 +380,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             mView = itemView;
             dotsMenu = mView.findViewById(R.id.ic_dots);
             comments = mView.findViewById(R.id.home_comment);
-
+            reportMenu = mView.findViewById(R.id.report_dots);
+            reportMenu.setVisibility(View.GONE);
+            dotsMenu.setVisibility(View.GONE);
         }
 
         public void setProfileImage(String profileImage) {
@@ -283,10 +407,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             Glide.with(context).load(postImage).into(imageView);
         }
 
-        public void setDescText(String descText) {
-            descView = mView.findViewById(R.id.homeRow_caption);
-            descView.setText(descText);
-        }
+
     }
 
     public void setFilter(ArrayList<Blog> newPost) {

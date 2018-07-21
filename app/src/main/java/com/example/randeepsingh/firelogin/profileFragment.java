@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,13 +26,23 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,9 +68,11 @@ public class profileFragment extends Fragment {
     String coverUrl = null;
     String username = null;
     Toolbar toolbar;
-
-
-
+    ArrayList<ProfileViewList> profileList= new ArrayList<>();;
+    ProfileRecyclerAdapter profileRecyclerAdapter;
+    RecyclerView recyclerView;
+    private String post_id;
+    private ProfileViewList profileViewList;
 
     public profileFragment() {
         // Required empty public constructor
@@ -79,7 +93,6 @@ public class profileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
 
-
         toolbar = view.findViewById(R.id.prof_toolbar);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -93,8 +106,8 @@ public class profileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
-
-
+        profileViewList=new ProfileViewList();
+        recyclerView=view.findViewById(R.id.profile_recycler);
 
         mImage = view.findViewById(R.id.prof_pic);
         mCover = view.findViewById(R.id.prof_mCover);
@@ -103,9 +116,8 @@ public class profileFragment extends Fragment {
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Cover_images");
 
         spinner.setVisibility(View.VISIBLE);
-
-
-
+        postid pd = new postid();
+        post_id = pd.getPostid();
         firebaseFirestore.collection("Users").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -128,6 +140,37 @@ public class profileFragment extends Fragment {
                     }
                 } else {
                     mNametxt.setText("");
+                }
+
+            }
+        });
+        profileRecyclerAdapter=new ProfileRecyclerAdapter(profileList);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        recyclerView.setAdapter(profileRecyclerAdapter);
+
+        Query query=firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
+
+
+       query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+
+                if (!documentSnapshots.isEmpty()) {
+                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                        String post_user_id = doc.getDocument().getString("User_id");
+                        String post_thumb_url = doc.getDocument().getString("thumb_imageUrl");
+                        String blog_post_id = doc.getDocument().getId();
+Log.v("profile_test","cuser "+currentUser+" post_user: "+post_user_id+" thumb_url: "+post_thumb_url);
+                        if (post_user_id.equals(currentUser)) {
+                            profileList.add(new ProfileViewList(blog_post_id,post_thumb_url));
+                            profileViewList.setBlogPostrID(post_id);
+                            profileRecyclerAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+                } else {
+                    Log.v("profilefrag", "some error");
                 }
 
             }
@@ -156,11 +199,19 @@ public class profileFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_logout:
-                getActivity().finish();
-                mAuth.signOut();
-                Toast.makeText(getActivity(), "Successfully logged out", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), MainActivity.class));
-                getActivity().finish();
+                Map<String, Object> tokenRemoveMap = new HashMap<>();
+                tokenRemoveMap.put("token_id", "");
+                firebaseFirestore.collection("Users").document(currentUser).update(tokenRemoveMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        getActivity().finish();
+                        mAuth.signOut();
+                        Toast.makeText(getActivity(), "Successfully logged out", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getActivity(), MainActivity.class));
+                        getActivity().finish();
+                    }
+                });
+
 
                 break;
             case R.id.action_settings:

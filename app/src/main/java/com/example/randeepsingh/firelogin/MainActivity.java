@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -14,9 +15,16 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private TextView txtReg;
     private ImageView mGmail;
-
+private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
@@ -47,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
+firebaseFirestore=FirebaseFirestore.getInstance();
 
                 if (firebaseAuth.getCurrentUser() != null) {
                     startActivity(new Intent(MainActivity.this, AccountMain.class));
@@ -84,7 +92,24 @@ public class MainActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (!task.isSuccessful()) {
+                    if (task.isSuccessful()) {
+
+                           String tokenID= FirebaseInstanceId.getInstance().getToken();
+                           String user_id=mAuth.getCurrentUser().getUid();
+                                Log.v("tokenID"," "+tokenID+"  "+user_id);
+                                Map<String,Object> map=new HashMap<>();
+                                map.put("token_id",tokenID);
+                            firebaseFirestore.collection("Users").document(user_id).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(MainActivity.this, "User Successfully Logged In", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+
+                    }
+                    else if(!task.isSuccessful()){
                         Toast.makeText(MainActivity.this, "Incorrect email or password", Toast.LENGTH_LONG).show();
                     }
 

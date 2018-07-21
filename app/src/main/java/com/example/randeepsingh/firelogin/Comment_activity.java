@@ -1,5 +1,6 @@
 package com.example.randeepsingh.firelogin;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,7 +42,7 @@ public class Comment_activity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     String userID;
-SharedPref sharedPref;
+    SharedPref sharedPref;
 
     ImageView cmntpost;
     EditText cmntValue;
@@ -47,9 +50,11 @@ SharedPref sharedPref;
     ArrayList<Comments> commentList;
     CommentRecyclerAdapter commentRecyclerAdapter;
     String blogPostID;
+    TextView caption;
     ProgressBar progressBar;
+String postUser;
 
-
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPref = new SharedPref(this);
@@ -68,17 +73,32 @@ SharedPref sharedPref;
         auth = FirebaseAuth.getInstance();
         commentList = new ArrayList<>();
         userID = auth.getCurrentUser().getUid();
-       progressBar = findViewById(R.id.comments_progress);
-
+        progressBar = findViewById(R.id.comments_progress);
+        caption = findViewById(R.id.comments_caption);
+        caption.setText("");
         cmntpost = findViewById(R.id.comment_send);
         cmntValue = findViewById(R.id.comment_ed1);
         // Log.v("bgid",""+blogPostID);
         blogPostID = getIntent().getStringExtra("blog_post_id");
+        postUser=getIntent().getStringExtra("postUserID");
+
 
         // Log.v("bgidd",""+blogPostID);
         cRecyclerView = findViewById(R.id.comment_recycler);
         progressBar.setVisibility(View.VISIBLE);
 
+        //Retrieving caption
+        firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getResult().exists()){
+                    String postCaption=task.getResult().getString("description_value");
+                    Log.v("captions",""+postCaption);
+                    caption.setText(postCaption);
+
+                }
+            }
+        });
 
         //commments Retreving
         Query query = firebaseFirestore.collection("Posts").document(blogPostID).collection("Comments").orderBy("time_stamp", Query.Direction.ASCENDING);
@@ -92,7 +112,7 @@ SharedPref sharedPref;
                             String cmntID = doc.getDocument().getId();
                             Comments comments = doc.getDocument().toObject(Comments.class).withID(cmntID);
                             commentList.add(comments);
-                          //  progressBar.setVisibility(View.GONE);
+                            //  progressBar.setVisibility(View.GONE);
 
                             Log.v("bgid", "query called");
                         }
@@ -106,7 +126,6 @@ SharedPref sharedPref;
                 progressBar.setVisibility(View.GONE);
             }
         });
-
 
 
         Log.v("bgid", "recyclerview set");
@@ -138,6 +157,8 @@ SharedPref sharedPref;
                         }
                     }
                 });
+
+
 
             }
         });

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +21,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -30,6 +34,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import android.net.Uri;
 import android.widget.Toast;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,12 +57,17 @@ public class addFragment extends Fragment {
     private StorageReference coverImgRef;
     private Uri mainImageUri = null;
     Uri cover_downloadUrl;
+    homeFragment homeFrag = null;
     Bitmap post_Bitmap = null;
     String fullName;
     String thumbID;
     SharedPref sharedPref;
-  //  private StorageReference mStorage;
+    byte[] thumb_byte;
+    String postLink;
+    String token_id;
+    //  private StorageReference mStorage;
     private FirebaseAuth mAuth;
+    StorageReference thumb_filePath;
     private String mUserid;
 
     private String postDesc;
@@ -75,7 +85,7 @@ public class addFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        sharedPref=new SharedPref(getActivity());
+        sharedPref = new SharedPref(getActivity());
         if (sharedPref.loadNightModeState() == true) {
             getActivity().setTheme(R.style.DarkTheme);
         } else if (sharedPref.loadNightModeState() == false) {
@@ -85,10 +95,11 @@ public class addFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
+        homeFrag = new homeFragment();
         mImageview = view.findViewById(R.id.add_image);
         mCaption = (TextInputEditText) view.findViewById(R.id.add_txt);
         mBtnPublish = view.findViewById(R.id.add_btnPublish);
-       // mStorage = FirebaseStorage.getInstance().getReference();
+        // mStorage = FirebaseStorage.getInstance().getReference();
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Posts");
 
@@ -101,6 +112,9 @@ public class addFragment extends Fragment {
         });
         mAuth = FirebaseAuth.getInstance();
         mUserid = mAuth.getCurrentUser().getUid();
+
+
+                token_id= FirebaseInstanceId.getInstance().getToken();
 
         mFirebaseFirestore.collection("Users").document(mUserid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -117,8 +131,51 @@ public class addFragment extends Fragment {
         mBtnPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
+                mprogressDialog.setMessage("Please wait");
+                mprogressDialog.show();
 
-                startPosting();
+
+                thumb_filePath = coverImgRef.child(mUserid).child(randomName + ".jpg");
+
+
+                thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        cover_downloadUrl = taskSnapshot.getDownloadUrl();
+                        postLink = cover_downloadUrl.toString();
+                        postDesc = mCaption.getText().toString().trim();
+
+
+
+
+                        Map<String, Object> mdata = new HashMap<>();
+                        mdata.put("description_value", postDesc);
+                        mdata.put("full_name", fullName);
+                        mdata.put("thumb_id", thumbID);
+                        mdata.put("thumb_imageUrl", postLink);
+                        mdata.put("User_id", mUserid);
+                        mdata.put("Time_stamp", FieldValue.serverTimestamp());
+                        mdata.put("token_id",token_id);
+                        Log.v("plink", "" + postLink);
+
+
+                        mFirebaseFirestore.collection("Posts").document(randomName).set(mdata).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getActivity(), AccountMain.class));
+
+                            }
+                        });
+
+                        Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
+                        mprogressDialog.dismiss();
+                    }
+                });
+
+
             }
         });
 
@@ -137,30 +194,6 @@ public class addFragment extends Fragment {
 
     }
 
-
-    private void startPosting() {
-        postDesc = mCaption.getText().toString().trim();
-
-        String postLink; //postDec, mUderid
-        postLink = cover_downloadUrl.toString();
-
-        Map<String, Object> mdata = new HashMap<>();
-        mdata.put("description_value", postDesc);
-        mdata.put("full_name", fullName);
-        mdata.put("thumb_id", thumbID);
-        mdata.put("thumb_imageUrl", postLink);
-        mdata.put("User_id", mUserid);
-        mdata.put("Time_stamp", FieldValue.serverTimestamp());
-
-        mFirebaseFirestore.collection("Posts").document(randomName).set(mdata).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-    }
 
     public static Fragment newInstance() {
         addFragment addfragment = new addFragment();
@@ -190,26 +223,7 @@ public class addFragment extends Fragment {
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 post_Bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-                final byte[] thumb_byte = byteArrayOutputStream.toByteArray();
-
-                final StorageReference thumb_filePath = coverImgRef.child(mUserid).child(randomName + ".jpg");
-
-                final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
-                mprogressDialog.setMessage("Please wait");
-                mprogressDialog.show();
-
-                thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        cover_downloadUrl = taskSnapshot.getDownloadUrl();
-                        Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
-
-                        mImageview.setImageURI(mainImageUri);
-
-                        mprogressDialog.dismiss();
-                    }
-                });
-
+                thumb_byte = byteArrayOutputStream.toByteArray();
 
             }
         }

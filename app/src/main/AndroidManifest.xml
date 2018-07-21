@@ -37,6 +37,18 @@
         <activity android:name=".ThemeActivity" />
         <activity android:name=".Comment_activity" />
         <activity android:name=".SettingsMain"></activity>
+        <service
+            android:name=".NotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id"/>
+
     </application>
 
 </manifest>
