@@ -52,7 +52,7 @@ public class Comment_activity extends AppCompatActivity {
     String blogPostID;
     TextView caption;
     ProgressBar progressBar;
-String postUser;
+    String postUser;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -74,13 +74,15 @@ String postUser;
         commentList = new ArrayList<>();
         userID = auth.getCurrentUser().getUid();
         progressBar = findViewById(R.id.comments_progress);
+        progressBar.setVisibility(View.VISIBLE);
         caption = findViewById(R.id.comments_caption);
         caption.setText("");
         cmntpost = findViewById(R.id.comment_send);
         cmntValue = findViewById(R.id.comment_ed1);
         // Log.v("bgid",""+blogPostID);
         blogPostID = getIntent().getStringExtra("blog_post_id");
-        postUser=getIntent().getStringExtra("postUserID");
+        postUser = getIntent().getStringExtra("postUserID");
+
 
 
         // Log.v("bgidd",""+blogPostID);
@@ -91,9 +93,9 @@ String postUser;
         firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.getResult().exists()){
-                    String postCaption=task.getResult().getString("description_value");
-                    Log.v("captions",""+postCaption);
+                if (task.getResult().exists()) {
+                    String postCaption = task.getResult().getString("description_value");
+                    Log.v("captions", "" + postCaption);
                     caption.setText(postCaption);
 
                 }
@@ -112,6 +114,7 @@ String postUser;
                             String cmntID = doc.getDocument().getId();
                             Comments comments = doc.getDocument().toObject(Comments.class).withID(cmntID);
                             commentList.add(comments);
+                            progressBar.setVisibility(View.GONE);
                             //  progressBar.setVisibility(View.GONE);
 
                             Log.v("bgid", "query called");
@@ -142,6 +145,7 @@ String postUser;
                 cmntMap.put("comment_value", cmntVal);
                 cmntMap.put("user_id", userID);
                 cmntMap.put("time_stamp", FieldValue.serverTimestamp());
+cmntMap.put("post_id",blogPostID);
 
                 final ProgressDialog progressDialog = new ProgressDialog(Comment_activity.this);
                 progressDialog.setMessage("Posting Comment");
@@ -158,6 +162,12 @@ String postUser;
                     }
                 });
 
+                firebaseFirestore.collection("Users").document(postUser).collection("Notifications").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        Log.v("mnotif2", "notif collection updated");
+                    }
+                });
 
 
             }

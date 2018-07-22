@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Blog extends com.example.randeepsingh.firelogin.BlogPostID {
 
-    private String   description_value,thumb_imageUrl,full_name, thumb_id;
+    private String   description_value,thumb_imageUrl,full_name, thumb_id,User_id;
     private Date Time_stamp;
 
     public Blog() {
@@ -51,7 +51,15 @@ public class Blog extends com.example.randeepsingh.firelogin.BlogPostID {
         Time_stamp = time_stamp;
     }
 
-    public Blog( String description_value, String thumb_imageUrl, String full_name, String thumb_id, Date time_stamp) {
+    public String getUser_id() {
+        return User_id;
+    }
+
+    public void setUser_id(String user_id) {
+        User_id = user_id;
+    }
+
+    public Blog(String description_value, String thumb_imageUrl, String full_name, String thumb_id, Date time_stamp) {
 
 
         this.description_value = description_value;

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,12 +35,14 @@ import java.util.ArrayList;
  */
 public class notifFragment extends Fragment {
 
+    SharedPref sharedPref;
     FirebaseAuth auth;
     FirebaseFirestore firebaseFirestore;
     String userID;
     ArrayList<Comments> notifList;
     RecyclerView recyclerView;
     NotifRecyclerAdapter notifRecyclerAdapter;
+    ProgressBar progressBar;
 
     public notifFragment() {
         // Required empty public constructor
@@ -49,6 +52,14 @@ public class notifFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sharedPref = new SharedPref(getActivity());
+
+        if (sharedPref.loadNightModeState() == true) {
+            getActivity().setTheme(R.style.DarkTheme);
+        } else if (sharedPref.loadNightModeState() == false) {
+            getActivity().setTheme(R.style.AppTheme);
+        }
+
         View view = inflater.inflate(R.layout.fragment_notif, container, false);
 
         notifList = new ArrayList<>();
@@ -58,69 +69,28 @@ public class notifFragment extends Fragment {
         recyclerView = view.findViewById(R.id.notif_recyclerView);
 
         notifRecyclerAdapter = new NotifRecyclerAdapter(notifList);
+
+        progressBar=view.findViewById(R.id.notif_progress);
+        progressBar.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(notifRecyclerAdapter);
 
-        firebaseFirestore.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+        Query query =firebaseFirestore.collection("Users").document(userID).collection("Notifications").orderBy("time_stamp", Query.Direction.DESCENDING);
+query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+    @Override
+    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
-                if (!documentSnapshots.isEmpty()) {
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String blogPosTID = doc.getDocument().getId();
-
-                            String blogUserID = doc.getDocument().getString("User_id");
-                            Log.v("mnotif_test", "" + blogPosTID);
-
-
-                            if (userID.equals(blogUserID)) {
-                                Log.v("mkey3", "" + blogUserID);
-
-                                String cPost_id = doc.getDocument().getId();
-                                /*final User user = doc.getDocument().toObject(User.class);*/
-                                Log.v("mkey3", "  cpost  " + cPost_id);
-
-                                Query query = firebaseFirestore.collection("Posts").document(cPost_id).collection("Comments").orderBy("time_stamp", Query.Direction.DESCENDING);
-                                query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                                        if (!documentSnapshots.isEmpty()) {
-                                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                                    final String cmntUser = doc.getDocument().getString("user_id");
-
-                                                    Log.v("userTest", "" + cmntUser);
-                                                    String cmntID = doc.getDocument().getId();
-                                                    final Comments comments = doc.getDocument().toObject(Comments.class).withID(cmntID);
-                                                    notifList.add(comments);
-
-                                                    notifRecyclerAdapter.notifyDataSetChanged();
-
-                                                    //  progressBar.setVisibility(View.GONE);
-
-                                                }
-
-
-                                            }
-
-                                        }
-                                    }
-                                });
-
-                                Log.v("notifTest", "user id: " + userID + "   post: " + cPost_id);
-                            }
-
-                        }
-
-
-                    }
-                } else {
-                    Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
-                }
-
+        if (!documentSnapshots.isEmpty()){
+            for(DocumentChange doc: documentSnapshots.getDocumentChanges()){
+                Comments notifications=doc.getDocument().toObject(Comments.class);
+                notifList.add(notifications);
+                progressBar.setVisibility(View.GONE);
+                notifRecyclerAdapter.notifyDataSetChanged();
             }
-        });
+        }
+
+    }
+});
 
 
         return view;

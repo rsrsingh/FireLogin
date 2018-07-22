@@ -3,7 +3,7 @@ package com.example.randeepsingh.firelogin;
 import java.util.Date;
 
 class Comments extends CommentID {
-    private String comment_value,user_id;
+    private String comment_value,user_id,post_id;
     private Date time_stamp;
 
     public Comments() {
@@ -37,6 +37,14 @@ class Comments extends CommentID {
 
     public void setTime_stamp(Date time_stamp) {
         this.time_stamp = time_stamp;
+    }
+
+    public String getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
     }
 }
 

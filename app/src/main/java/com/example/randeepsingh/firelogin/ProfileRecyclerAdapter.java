@@ -1,8 +1,10 @@
 package com.example.randeepsingh.firelogin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<ProfileRecycler
     FirebaseFirestore firebaseFirestore;
     ArrayList<ProfileViewList> postList;
     private String postURL;
-    private String postID;
+
     FirebaseAuth auth;
 
     public ProfileRecyclerAdapter(ArrayList<ProfileViewList> postList) {
@@ -40,15 +42,19 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<ProfileRecycler
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        postID = postList.get(position).getBlogPostrID();
+
         postURL = postList.get(position).getThumb_imageUrl();
-        holder.setImage(postURL);
+
         final String post_id = postList.get(position).getBlogPostrID();
+        holder.setImage(postURL);
+        Log.e("mtest7", "onBindViewHolder: "+post_id );
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "image is clicked at position: " + position, Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, UserPost.class);
+                i.putExtra("blog_post_id", post_id);
+                context.startActivity(i);
             }
         });
     }

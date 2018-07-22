@@ -160,6 +160,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         private ImageView deleteView;
 
 
+
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -173,6 +174,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         public void setProfImage(String profileImage) {
             profView = mView.findViewById(R.id.cmntRow_prof);
             Glide.with(context).load(profileImage).into(profView);
+
         }
 
         public void setUsername(String username) {

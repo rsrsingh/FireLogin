@@ -126,54 +126,64 @@ public class addFragment extends Fragment {
                 }
             }
         });
+        postDesc = mCaption.getText().toString();
 
 
         mBtnPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
-                mprogressDialog.setMessage("Please wait");
-                mprogressDialog.show();
 
 
-                thumb_filePath = coverImgRef.child(mUserid).child(randomName + ".jpg");
+             if (mainImageUri==null){
+                    Toast.makeText(getActivity(), "Please upload a photo", Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
+                    mprogressDialog.setMessage("Please wait");
+                    mprogressDialog.show();
 
 
-                thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        cover_downloadUrl = taskSnapshot.getDownloadUrl();
-                        postLink = cover_downloadUrl.toString();
-                        postDesc = mCaption.getText().toString().trim();
+                    thumb_filePath = coverImgRef.child(mUserid).child(randomName + ".jpg");
 
 
+                    thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            cover_downloadUrl = taskSnapshot.getDownloadUrl();
+                            postLink = cover_downloadUrl.toString();
 
 
-                        Map<String, Object> mdata = new HashMap<>();
-                        mdata.put("description_value", postDesc);
-                        mdata.put("full_name", fullName);
-                        mdata.put("thumb_id", thumbID);
-                        mdata.put("thumb_imageUrl", postLink);
-                        mdata.put("User_id", mUserid);
-                        mdata.put("Time_stamp", FieldValue.serverTimestamp());
-                        mdata.put("token_id",token_id);
-                        Log.v("plink", "" + postLink);
 
 
-                        mFirebaseFirestore.collection("Posts").document(randomName).set(mdata).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getActivity(), AccountMain.class));
+                            Map<String, Object> mdata = new HashMap<>();
+                            mdata.put("description_value", postDesc);
+                            mdata.put("full_name", fullName);
+                            mdata.put("thumb_id", thumbID);
+                            mdata.put("thumb_imageUrl", postLink);
+                            mdata.put("User_id", mUserid);
+                            mdata.put("Time_stamp", FieldValue.serverTimestamp());
+                            mdata.put("token_id",token_id);
+                            Log.v("plink", "" + postLink);
 
-                            }
-                        });
 
-                        Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
-                        mprogressDialog.dismiss();
-                    }
-                });
+                            mFirebaseFirestore.collection("Posts").document(randomName).set(mdata).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getActivity(), AccountMain.class));
+
+                                }
+                            });
+
+                            Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
+                            mprogressDialog.dismiss();
+                        }
+                    });
+
+                }
+
 
 
             }

@@ -68,7 +68,8 @@ public class profileFragment extends Fragment {
     String coverUrl = null;
     String username = null;
     Toolbar toolbar;
-    ArrayList<ProfileViewList> profileList= new ArrayList<>();;
+    ArrayList<ProfileViewList> profileList = new ArrayList<>();
+    ;
     ProfileRecyclerAdapter profileRecyclerAdapter;
     RecyclerView recyclerView;
     private String post_id;
@@ -106,8 +107,8 @@ public class profileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        profileViewList=new ProfileViewList();
-        recyclerView=view.findViewById(R.id.profile_recycler);
+        profileViewList = new ProfileViewList();
+        recyclerView = view.findViewById(R.id.profile_recycler);
 
         mImage = view.findViewById(R.id.prof_pic);
         mCover = view.findViewById(R.id.prof_mCover);
@@ -144,14 +145,14 @@ public class profileFragment extends Fragment {
 
             }
         });
-        profileRecyclerAdapter=new ProfileRecyclerAdapter(profileList);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        profileRecyclerAdapter = new ProfileRecyclerAdapter(profileList);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerView.setAdapter(profileRecyclerAdapter);
 
-        Query query=firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
+        Query query = firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
 
 
-       query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
@@ -160,9 +161,9 @@ public class profileFragment extends Fragment {
                         String post_user_id = doc.getDocument().getString("User_id");
                         String post_thumb_url = doc.getDocument().getString("thumb_imageUrl");
                         String blog_post_id = doc.getDocument().getId();
-Log.v("profile_test","cuser "+currentUser+" post_user: "+post_user_id+" thumb_url: "+post_thumb_url);
+                        Log.v("profile_test", "cuser " + currentUser + " post_user: " + post_user_id + " thumb_url: " + post_thumb_url);
                         if (post_user_id.equals(currentUser)) {
-                            profileList.add(new ProfileViewList(blog_post_id,post_thumb_url));
+                            profileList.add(new ProfileViewList(blog_post_id, post_thumb_url));
                             profileViewList.setBlogPostrID(post_id);
                             profileRecyclerAdapter.notifyDataSetChanged();
 

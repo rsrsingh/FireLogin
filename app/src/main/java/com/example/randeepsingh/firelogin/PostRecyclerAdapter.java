@@ -65,10 +65,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private FirebaseAuth auth;
     String userID;
     String userCheck;
-
-
-
-
+String userPass;
 
     private SharedPref sharedPref;
 
@@ -103,7 +100,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     public void onBindViewHolder(@NonNull final PostRecyclerAdapter.ViewHolder holder, final int position) {
         holder.setIsRecyclable(false);
         final String blogPostID = postList.get(position).BlogPostID;
-
+        final String postUserID = postList.get(position).getUser_id();
 
         pd.setPostid(blogPostID);
 
@@ -113,6 +110,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
                     userCheck = task.getResult().getString("User_id");
+                    Log.e("mtest6", "onComplete: "+userCheck );
                     if (userID.equals(userCheck)) {
                         holder.dotsMenu.setVisibility(View.VISIBLE);
 
@@ -133,8 +131,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     try {
                         holder.mView.setVisibility(View.GONE);
                         postList.remove(position);
-                        postList.remove(position);
-                    } catch (IndexOutOfBoundsException exception) {
+                        } catch (IndexOutOfBoundsException exception) {
                         Log.e("report hide", " post remove exception " + exception.getMessage());
                     }
                 } else {
@@ -143,6 +140,32 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 }
             }
         });
+
+   /*     firebaseFirestore.collection("Users").document(userID).collection("Block").document(postUserID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+
+                if(documentSnapshot.exists()){
+                    String blockedUserID= documentSnapshot.getId();
+                    try {
+                        if (blockedUserID.equals(userCheck)) {
+                            try {
+                                postList.remove(position);
+                            } catch (IndexOutOfBoundsException e1) {
+                                Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
+                            }
+                            Log.e("blocked hide", " post removed");
+                        } else {
+                            Log.e("blocked hide", " post remove else");
+                        }
+                    } catch (IndexOutOfBoundsException exce) {
+                        Log.e("block hide", " post remove exception " + exce.getMessage());
+                    }
+                }
+
+            }
+        });*/
+
 
         final String description_value = postList.get(position).getDescription_value();
 
@@ -170,10 +193,26 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, Comment_activity.class);
-                i.putExtra("blog_post_id", blogPostID);
-                i.putExtra("postUserID",userCheck);
-                context.startActivity(i);
+
+                final ProgressDialog progressDialog=new ProgressDialog(context);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+                firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                   if (task.getResult().exists()){
+                       userPass=task.getResult().getString("User_id");
+
+                       Intent i = new Intent(context, Comment_activity.class);
+                       i.putExtra("blog_post_id", blogPostID);
+                       i.putExtra("postUserID", userPass);
+                       Log.e("mtest6", "onClick: "+userPass );
+                       context.startActivity(i);
+
+                       progressDialog.dismiss();
+                   }
+                    }
+                });
 
             }
         });
@@ -204,10 +243,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.report_btnReport:
-                          userReport(userID,position,blogPostID);
+                                userReport(userID, position, blogPostID);
                                 break;
                             case R.id.report_btnblock:
-                              userBlock(userID,userCheck);
+                                userBlock(userID, userCheck);
                                 break;
                         }
 
@@ -217,6 +256,38 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 popupMenu.show();
             }
         });
+
+
+
+            holder.userView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    final ProgressDialog progressDialog=new ProgressDialog(context);
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
+                    firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.getResult().exists()){
+                                userPass=task.getResult().getString("User_id");
+
+                                Intent  i=new Intent(context,UserProfile.class);
+                                Log.e("mtest8", "onClick: "+userPass );
+                                i.putExtra("post_user_id",userPass);
+                                context.startActivity(i);
+                                progressDialog.dismiss();
+                            }
+                        }
+                    });
+
+
+                }
+            });
+
+
+
+
 
         holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,7 +352,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         Log.e("block ", "block clicked");
                         Map<String, Object> map = new HashMap<>();
                         map.put("Time_stamp", FieldValue.serverTimestamp());
-                       firebaseFirestore.collection("Users").document(userID).collection("Block").document(userCheck).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        firebaseFirestore.collection("Users").document(userID).collection("Block").document(userCheck).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
@@ -306,7 +377,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
-    private void userReport(final String userID, final int position,final  String blogPostID) {
+    private void userReport(final String userID, final int position, final String blogPostID) {
 
         final AlertDialog alertDialog;
 
@@ -315,7 +386,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         } else {
             new AlertDialog.Builder(context, R.style.AppTheme);
         }
-        alertDialog= new AlertDialog.Builder(context).setTitle("Caution:").setMessage("Are you sure you want to report this post?").setPositiveButton("Report", new DialogInterface.OnClickListener() {
+        alertDialog = new AlertDialog.Builder(context).setTitle("Caution:").setMessage("Are you sure you want to report this post?").setPositiveButton("Report", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Map<String, Object> map = new HashMap<>();

@@ -2,13 +2,17 @@ package com.example.randeepsingh.firelogin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.client.Firebase;
@@ -56,7 +60,9 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull final NotifRecyclerAdapter.ViewHolder holder, int position) {
-
+        holder.setIsRecyclable(false);
+        final String postID = notifList.get(position).getPost_id();
+        Log.e("postID", "onBindViewHolder: "+ postID );
 //final String commentID=comntList.get(position).CommentID;
 //imageURL=comntList.get(position).
 
@@ -66,10 +72,10 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
         Date date = notifList.get(position).getTime_stamp();
 
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy hh:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy hh:mm");
         final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
 
-        Log.v("mdate",""+nowMMDDYYYY.toString());
+        Log.v("mdate", "" + nowMMDDYYYY.toString());
 
         firebaseFirestore.collection("Users").document(from_user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -81,12 +87,22 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
                     holder.setImage(thumbUrl);
                     holder.setUsername(uName);
 
+
                 }
             }
         });
 
         holder.setDesc(descValue);
         holder.setTime(nowMMDDYYYY);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, UserPost.class);
+                i.putExtra("blog_post_id", postID);
+                context.startActivity(i);
+            }
+        });
         //Date date = comntList.get(position).getTime_stamp();
 
 
@@ -110,17 +126,20 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
         View mView;
         TextView username, mDescription, timeStamp;
         CircleImageView circleImageView;
+        CardView cardView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            cardView = mView.findViewById(R.id.notif_card);
 
         }
+
 
         public void setImage(String url) {
             circleImageView = mView.findViewById(R.id.notif_image);
             Glide.with(context).load(url).into(circleImageView);
-
         }
 
         public void setDesc(String desc) {
@@ -135,7 +154,7 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
 
         public void setUsername(String uName) {
             username = mView.findViewById(R.id.notif_username);
-            username.setText(uName);
+            username.setText(uName+" commented on your post:");
         }
     }
 
