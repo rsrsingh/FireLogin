@@ -79,7 +79,7 @@ public class Comment_activity extends AppCompatActivity {
         caption.setText("");
         cmntpost = findViewById(R.id.comment_send);
         cmntValue = findViewById(R.id.comment_ed1);
-        // Log.v("bgid",""+blogPostID);
+       //Log.v("bgid",""+blogPostID);
         blogPostID = getIntent().getStringExtra("blog_post_id");
         postUser = getIntent().getStringExtra("postUserID");
 
@@ -94,8 +94,8 @@ public class Comment_activity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
-                    String postCaption = task.getResult().getString("description_value");
-         //           Log.v("captions", "" + postCaption);
+                String postCaption = task.getResult().getString("description_value");
+           // Log.v("captions", "" + postCaption);
                     caption.setText(postCaption);
 
                 }

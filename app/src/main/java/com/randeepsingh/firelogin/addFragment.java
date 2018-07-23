@@ -135,7 +135,7 @@ public class addFragment extends Fragment {
                 Toast.makeText(getActivity(), "Some error has occured", Toast.LENGTH_SHORT).show();
             }
         });
-        postDesc = mCaption.getText().toString();
+
 
 
         mBtnPublish.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,7 @@ public class addFragment extends Fragment {
 
                             cover_downloadUrl = taskSnapshot.getDownloadUrl();
                             postLink = cover_downloadUrl.toString();
-
+                            postDesc = mCaption.getText().toString().trim();
 
 
 
