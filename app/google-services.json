@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:175393868521:android:248d14725a0f6b41",
         "android_client_info": {
-          "package_name": "com.randeepsingh.fireapp"
+          "package_name": "com.randeepsingh.blogfeed"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "175393868521-0d0ev1brcak5vse02k1db1nbf5upjv8p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.randeepsingh.fireapp",
+            "package_name": "com.randeepsingh.blogfeed",
             "certificate_hash": "d3e91e09bd145e4dac233aad4d8df76cbcd8c6b7"
           }
         },
@@ -58,7 +58,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:175393868521:android:214ebcad39e8a9c8",
         "android_client_info": {
-          "package_name": "com.randeepsingh.firelogin"
+          "package_name": "com.randeepsingh.blogfeed"
         }
       },
       "oauth_client": [
@@ -66,7 +66,7 @@
           "client_id": "175393868521-2khner1aogt7clhc7u9plhh22f0h1ij4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.randeepsingh.firelogin",
+            "package_name": "com.randeepsingh.blogfeed",
             "certificate_hash": "d3e91e09bd145e4dac233aad4d8df76cbcd8c6b7"
           }
         },

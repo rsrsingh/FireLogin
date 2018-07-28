@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.randeepsingh.firelogin">
+    package="com.randeepsingh.blogfeed">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -47,16 +47,16 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-        <activity android:name=".UserPost" >
+
+        <activity android:name=".UserPost">
             <intent-filter>
-                <action android:name="com.example.randeepsingh.firelogin.TARGETNOTIFICATION"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.example.randeepsingh.firelogin.TARGETNOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserProfile"></activity>
-
-
-
+        <activity android:name=".UserProfile" />
+        <activity android:name=".ForgotPassword"></activity>
     </application>
 
 </manifest>

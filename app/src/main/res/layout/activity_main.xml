@@ -17,14 +17,14 @@
         android:paddingRight="10dp"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="parent">
-<ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/icon_foreground"
-    android:id="@+id/img1"
-    app:layout_constraintLeft_toRightOf="parent"
-    app:layout_constraintRight_toLeftOf="parent"/>
 
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_foreground"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent" />
 
 
         <android.support.v7.widget.AppCompatAutoCompleteTextView
@@ -58,6 +58,17 @@
             android:text="Sign In"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@id/pass" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/main_forgotPass"
+            app:layout_constraintTop_toBottomOf="@id/loginbtn"
+            android:text="Forgot Password"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            android:textSize="25dp"
+            android:textColor="#c2c0c0"
+            android:layout_marginTop="10dp"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -67,7 +78,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Register Here"
-        android:textColor="#c2c0c0"
+        android:textColor="#ffffff"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
