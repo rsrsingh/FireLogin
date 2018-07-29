@@ -20,13 +20,15 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment   {
 
     private SharedPref sharedPref;
 
     Accreg_one accreg_one;
     Accreg_two accreg_two;
-    ArrayList settingsList = new ArrayList();
+    ArrayList<SettingsData> settingsList;
+    String setting_items[];
+
     ListView listView;
     BlockFragment blockFragment;
 
@@ -46,21 +48,35 @@ public class SettingsFragment extends Fragment {
             getActivity().setTheme(R.style.AppTheme);
         }
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        settingsList = new ArrayList();
-        settingsList.add("Profile Image");
+
+       /* settingsList.add("Profile Image");
         settingsList.add("Cover Image");
         settingsList.add("Themes");
-        settingsList.add("Blocked Users");
+        settingsList.add("Blocked Users");*/
         listView = view.findViewById(R.id.settings_list);
+
+        settingsList = new ArrayList();
+        setting_items=getResources().getStringArray(R.array.setting_items);
+
+        for (int i=0;i<setting_items.length;i++){
+            SettingsData settingsData=new SettingsData(setting_items[i]);
+            settingsList.add(settingsData);
+        }
+
+
         accreg_one = new Accreg_one();
         accreg_two = new Accreg_two();
         blockFragment = new BlockFragment();
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, settingsList);
-        listView.setAdapter(arrayAdapter);
+
+        final SettingListAdapter settingListAdapter=new SettingListAdapter(getActivity(),settingsList);
+        settingListAdapter.notifyDataSetChanged();
+        listView.setAdapter(settingListAdapter);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String value = (String) listView.getItemAtPosition(i);
+                //String value = (String) settingListAdapter.getItem(i);
+                String value = settingsList.get(i).getSetting_items();
                 if (value.equals("Profile Image")) {
                     getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, accreg_one).commit();
                 } else if (value.equals("Cover Image")) {
@@ -75,6 +91,15 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+       /* ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, settingsList);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });*/
+
 
         return view;
     }
@@ -83,5 +108,6 @@ public class SettingsFragment extends Fragment {
         SettingsFragment fragment = new SettingsFragment();
         return fragment;
     }
+
 
 }

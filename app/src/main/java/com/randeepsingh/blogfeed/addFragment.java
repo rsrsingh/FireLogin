@@ -102,7 +102,7 @@ public class addFragment extends Fragment {
 
         MobileAds.initialize(getActivity(),"ca-app-pub-5059411314324031/4179427516");
         adView=view.findViewById(R.id.add_bannerAds);
-        AdRequest adRequest=new AdRequest.Builder().build();
+        AdRequest adRequest=new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
         homeFrag = new homeFragment();
         mImageview = view.findViewById(R.id.add_image);

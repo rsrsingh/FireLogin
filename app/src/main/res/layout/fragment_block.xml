@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".BlockFragment">
+    tools:context=".BlockFragment"
+    android:background="?attr/fragBack">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,6 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/block_view"
+            android:background="?attr/fragBack"
             android:id="@+id/block_recycler"></android.support.v7.widget.RecyclerView>
     </android.support.constraint.ConstraintLayout>
 

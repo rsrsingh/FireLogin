@@ -26,16 +26,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/add_bannerAds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/add_image"
-            app:layout_constraintLeft_toRightOf="parent"
-            app:layout_constraintRight_toLeftOf="parent"
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-5059411314324031/4179427516"
-            android:id="@+id/add_bannerAds"></com.google.android.gms.ads.AdView>
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_image"></com.google.android.gms.ads.AdView>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/add_inner"

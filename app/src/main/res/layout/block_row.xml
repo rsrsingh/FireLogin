@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="?attr/cardbackground"
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -16,7 +17,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="?attr/cardbackground">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/blockRow_profile"
@@ -38,6 +40,7 @@
                 android:padding="5dp"
                 android:text="User Name"
                 android:textSize="20dp"
+                android:textColor="?attr/textcolor"
                 app:layout_constraintBottom_toTopOf="parent"
                app:layout_constraintRight_toLeftOf="@id/blockRow_btn"
                 app:layout_constraintLeft_toRightOf="@id/blockRow_profile"
