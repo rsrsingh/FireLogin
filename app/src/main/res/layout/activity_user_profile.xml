@@ -26,57 +26,225 @@
             app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <ImageView
+            android:id="@+id/userPorf_followAddBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/follow_add_icon"
+            app:layout_constraintBottom_toBottomOf="@id/userProf_mCover"
+            app:layout_constraintLeft_toRightOf="@id/userProf_rightcard"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userProf_mCover" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/userProf_toolbar"
+
+        <ImageView
+            android:id="@+id/userPorf_followMinusBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/follow_minus_icon"
+            app:layout_constraintBottom_toBottomOf="@id/userProf_mCover"
+            app:layout_constraintLeft_toRightOf="@id/userProf_rightcard"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userProf_mCover" />
+
+
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#17000000"
-
-            app:titleTextColor="?attr/textcolor"
-
-
-            ></android.support.v7.widget.Toolbar>
-
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userProf_pic"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-
-            app:layout_constraintBottom_toBottomOf="@+id/userProf_mCover"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userProf_mCover" />
+            android:src="@drawable/image_gradient_top"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/userProf_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="8dp"
 
-            android:textColor="?attr/textcolor"
+            android:layout_marginTop="8dp"
+            android:textColor="#ffff"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/userProf_pic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProf_pic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="16dp"
+
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/userProf_mCover"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userProf_mCover"
+            app:layout_constraintVertical_bias="0.0" />
 
-            />
+        <android.support.v7.widget.CardView
+            android:id="@+id/Userprof_leftcard"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="?attr/cardbackground"
+            app:cardElevation="5dp"
+            app:layout_constraintLeft_toRightOf="@id/userProf_pic"
+            app:layout_constraintStart_toEndOf="@+id/userProf_pic"
+            app:layout_constraintTop_toBottomOf="@id/userProf_mCover">
 
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/cardbackground">
+
+                <TextView
+                    android:id="@+id/User_prof_followers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Followers"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/User_prof_followersCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="parent"
+
+                    app:layout_constraintRight_toLeftOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/userProf_rightcard"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="5dp"
+            android:background="?attr/cardbackground"
+            app:cardElevation="5dp"
+            app:layout_constraintLeft_toRightOf="@id/Userprof_leftcard"
+            app:layout_constraintTop_toBottomOf="@id/userProf_mCover">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/cardbackground">
+
+                <TextView
+                    android:id="@+id/User_prof_following"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Following"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/User_prof_followingCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="?attr/textcolor"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="parent"
+                    app:layout_constraintRight_toLeftOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <!--<android.support.constraint.ConstraintLayout
+               android:id="@+id/UserProf_follow_cons"
+               android:layout_width="0dp"
+               android:layout_height="54dp"
+               android:layout_marginEnd="5dp"
+               android:layout_marginStart="5dp"
+               app:layout_constraintBottom_toTopOf="@+id/profile_recycler"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintLeft_toRightOf="@id/userProf_pic"
+               app:layout_constraintStart_toEndOf="@+id/userProf_pic"
+               app:layout_constraintTop_toBottomOf="@id/userProf_mCover">
+   -->
+
+        <!-- <TextView
+          android:id="@+id/User_prof_followers"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="8dp"
+             android:layout_marginTop="4dp"
+
+             android:text="Followers"
+             android:textSize="20sp"
+             app:layout_constraintLeft_toLeftOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!-- <TextView
+           android:id="@+id/User_prof_followersCount"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="0"
+             android:textSize="20sp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintLeft_toRightOf="@id/User_prof_followers"
+             app:layout_constraintRight_toLeftOf="@id/User_prof_followers"
+             app:layout_constraintTop_toBottomOf="@id/User_prof_followers" />
+-->
+
+        <!--   <TextView
+               android:id="@+id/User_prof_followingCount"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="0"
+               android:textSize="20sp"
+               app:layout_constraintLeft_toRightOf="@id/User_prof_following"
+               app:layout_constraintRight_toLeftOf="@id/User_prof_following"
+               app:layout_constraintTop_toBottomOf="@id/User_prof_following" />
+-->
+        <!--      <TextView
+                  android:id="@+id/User_prof_following"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="5dp"
+                  android:layout_marginTop="4dp"
+                  android:text="Following"
+                  android:textSize="20dp"
+                  app:layout_constraintLeft_toRightOf="@id/User_prof_followers"
+                  app:layout_constraintTop_toTopOf="parent" />
+  -->
+
+
+        <!--   </android.support.constraint.ConstraintLayout>
+
+
+   -->
 
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/userProf_recycler"
             android:layout_width="0dp"
+
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:stretchMode="columnWidth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userProf_pic"
-            android:id="@+id/userProf_recycler">
+            app:layout_constraintTop_toBottomOf="@id/Userprof_leftcard">
 
         </android.support.v7.widget.RecyclerView>
 

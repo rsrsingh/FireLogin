@@ -4,18 +4,18 @@ package com.randeepsingh.blogfeed;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -25,7 +25,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,10 +34,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import android.net.Uri;
-import android.widget.Toast;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,13 +91,13 @@ public class addFragment extends Fragment {
         } else if (sharedPref.loadNightModeState() == false) {
             getActivity().setTheme(R.style.AppTheme);
         }
-
+        ImagePicker();
 
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        MobileAds.initialize(getActivity(),"ca-app-pub-5059411314324031/4179427516");
-        adView=view.findViewById(R.id.add_bannerAds);
-        AdRequest adRequest=new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/4179427516");
+        adView = view.findViewById(R.id.add_bannerAds);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
         homeFrag = new homeFragment();
         mImageview = view.findViewById(R.id.add_image);
@@ -113,17 +108,17 @@ public class addFragment extends Fragment {
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Posts");
 
 
-        mImageview.setOnClickListener(new View.OnClickListener() {
+  /*      mImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ImagePicker();
             }
-        });
+        });*/
         mAuth = FirebaseAuth.getInstance();
         mUserid = mAuth.getCurrentUser().getUid();
 
 
-                token_id= FirebaseInstanceId.getInstance().getToken();
+        token_id = FirebaseInstanceId.getInstance().getToken();
 
         mFirebaseFirestore.collection("Users").document(mUserid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -132,8 +127,7 @@ public class addFragment extends Fragment {
                     fullName = task.getResult().getString("full_name");
                     thumbID = task.getResult().getString("thumb_id");
 
-                }
-                else if (!task.isSuccessful()){
+                } else if (!task.isSuccessful()) {
                     Toast.makeText(getActivity(), "Some error has occured", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -145,16 +139,14 @@ public class addFragment extends Fragment {
         });
 
 
-
         mBtnPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-             if (mainImageUri==null){
+                if (mainImageUri == null) {
                     Toast.makeText(getActivity(), "Please upload a photo", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
 
                     final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
                     mprogressDialog.setMessage("Please wait");
@@ -173,7 +165,6 @@ public class addFragment extends Fragment {
                             postDesc = mCaption.getText().toString().trim();
 
 
-
                             Map<String, Object> mdata = new HashMap<>();
                             mdata.put("description_value", postDesc);
                             mdata.put("full_name", fullName);
@@ -181,7 +172,7 @@ public class addFragment extends Fragment {
                             mdata.put("thumb_imageUrl", postLink);
                             mdata.put("User_id", mUserid);
                             mdata.put("Time_stamp", FieldValue.serverTimestamp());
-                            mdata.put("token_id",token_id);
+                            mdata.put("token_id", token_id);
 //                            Log.v("plink", "" + postLink);
 
 
@@ -195,13 +186,12 @@ public class addFragment extends Fragment {
                                 }
                             });
 
-  //                          Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
+                            //                          Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
                             mprogressDialog.dismiss();
                         }
                     });
 
                 }
-
 
 
             }
@@ -213,7 +203,7 @@ public class addFragment extends Fragment {
 
     private void ImagePicker() {
 
-    //    Log.e("hi", "imagpicker");
+        //    Log.e("hi", "imagpicker");
 
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
@@ -232,13 +222,13 @@ public class addFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-      //  Log.v("mkey2", "onactivity result called");
+        //  Log.v("mkey2", "onactivity result called");
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == getActivity().RESULT_OK) {
                 mainImageUri = result.getUri();
-        //        Log.v("mkey2", "add image uri: " + mainImageUri.toString());
+                //        Log.v("mkey2", "add image uri: " + mainImageUri.toString());
                 mImageview.setImageURI(mainImageUri);
 
 

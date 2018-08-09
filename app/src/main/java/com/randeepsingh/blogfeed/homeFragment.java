@@ -2,8 +2,6 @@ package com.randeepsingh.blogfeed;
 
 
 import android.os.Bundle;
-
-
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -110,6 +107,8 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
 
                     if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
+                        String postuser= documentChange.getDocument().getString("User_id");
+                        Log.e("postTest", "onEvent: "+postuser );
                         String blogPostID = documentChange.getDocument().getId();
                         final Blog blog = documentChange.getDocument().toObject(Blog.class).withID(blogPostID);
 

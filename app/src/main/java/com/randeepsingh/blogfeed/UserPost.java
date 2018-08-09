@@ -3,12 +3,11 @@ package com.randeepsingh.blogfeed;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,8 +22,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -32,11 +33,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -150,6 +151,45 @@ public class UserPost extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(UserPost.this, "Some error has occured", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //commments posting
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String cmntVal = cmntEditText.getText().toString();
+                cmntEditText.setText(null);
+
+                Map<String, Object> cmntMap = new HashMap<>();
+                cmntMap.put("comment_value", cmntVal);
+                cmntMap.put("user_id", userID);
+                cmntMap.put("time_stamp", FieldValue.serverTimestamp());
+                cmntMap.put("post_id", blogPostID);
+
+                final ProgressDialog progressDialog = new ProgressDialog(UserPost.this);
+                progressDialog.setMessage("Posting Comment");
+                progressDialog.show();
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Comments").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+
+                        if (task.isSuccessful()) {
+                            progressDialog.dismiss();
+                            Toast.makeText(UserPost.this, "Comment Posted", Toast.LENGTH_SHORT).show();
+                            commentRecyclerAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+                firebaseFirestore.collection("Users").document(postUserID).collection("Notifications").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        //              Log.v("mnotif2", "notif collection updated");
+                    }
+                });
+
+
             }
         });
 

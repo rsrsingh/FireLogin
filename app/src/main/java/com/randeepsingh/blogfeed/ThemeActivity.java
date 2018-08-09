@@ -1,8 +1,8 @@
 package com.randeepsingh.blogfeed;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -17,8 +17,8 @@ public class ThemeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPref=new SharedPref(this);
-        if (sharedPref.loadNightModeState()==true) {
+        sharedPref = new SharedPref(this);
+        if (sharedPref.loadNightModeState() == true) {
 
             setTheme(R.style.DarkTheme);
         } else {
@@ -34,8 +34,7 @@ public class ThemeActivity extends AppCompatActivity {
         mySwitch = (Switch) findViewById(R.id.theme_switch);
 
 
-
-        if (sharedPref.loadNightModeState()==true) {
+        if (sharedPref.loadNightModeState() == true) {
             mySwitch.setChecked(true);
         }
 
@@ -43,13 +42,14 @@ public class ThemeActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                 sharedPref.setNightModeState(true);
+                    sharedPref.setNightModeState(true);
 
-                    restartApp();
-
+                    startActivity(new Intent(getApplicationContext(), AccountMain.class));
+                    finish();
                 } else {
                     sharedPref.setNightModeState(false);
-                    restartApp();
+                    startActivity(new Intent(getApplicationContext(), AccountMain.class));
+                    finish();
 
 
                 }
@@ -58,11 +58,6 @@ public class ThemeActivity extends AppCompatActivity {
         });
 
 
-    }
-
-    public void restartApp() {
-        startActivity(new Intent(getApplicationContext(), AccountMain.class));
-        finish();
     }
 
 

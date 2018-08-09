@@ -1,15 +1,15 @@
 package com.randeepsingh.blogfeed;
 
-import android.hardware.camera2.params.BlackLevelPattern;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -22,12 +22,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,10 +44,13 @@ public class UserProfile extends AppCompatActivity {
     FirebaseAuth auth;
     ArrayList<ProfileViewList> postList = new ArrayList<>();
     TextView uName;
+    String userID;
     SharedPref sharedPref;
     String postUserID;
+    TextView followingCount, followerCount;
     ProfileRecyclerAdapter profileRecyclerAdapter;
     String username, thumbURL, coverURL;
+    ImageView followAdd, followMinus;
 
     String post_id;
 
@@ -62,18 +68,39 @@ public class UserProfile extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         postUserID = getIntent().getStringExtra("post_user_id");
-       // Log.e("mtest6", "onCreate: " + postUserID);
+        // Log.e("mtest6", "onCreate: " + postUserID);
         coverImage = findViewById(R.id.userProf_mCover);
         profImage = findViewById(R.id.userProf_pic);
         recyclerView = findViewById(R.id.userProf_recycler);
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-
         uName = findViewById(R.id.userProf_name);
 
+        followAdd = findViewById(R.id.userPorf_followAddBtn);
+        followMinus = findViewById(R.id.userPorf_followMinusBtn);
+        followAdd.setVisibility(View.GONE);
+        followMinus.setVisibility(View.GONE);
+
+        followingCount = findViewById(R.id.User_prof_followingCount);
+        followerCount = findViewById(R.id.User_prof_followersCount);
+        userID = auth.getCurrentUser().getUid();
         postid pd = new postid();
         post_id = pd.getPostid();
 
+        //follow check
+        firebaseFirestore.collection("Users").document(postUserID).collection("Followers").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()) {
+                    followMinus.setVisibility(View.VISIBLE);
+                } else {
+                    followAdd.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        //getting user info
         firebaseFirestore.collection("Users").document(postUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -104,6 +131,7 @@ public class UserProfile extends AppCompatActivity {
         recyclerView.setAdapter(profileRecyclerAdapter);
 
 
+        //getting user posts
         Query query = firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
 
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -128,6 +156,127 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
+        //following feature
+        followAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                final ProgressDialog progressDialog = new ProgressDialog(UserProfile.this);
+                progressDialog.setMessage("PLease Wait...");
+                progressDialog.show();
+
+                final Map<String, Object> map = new HashMap<>();
+                map.put("time_stamp", FieldValue.serverTimestamp());
+
+                firebaseFirestore.collection("Users").document(userID).collection("Following").document(postUserID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        Log.e("followKey", "userID success ");
+                        firebaseFirestore.collection("Users").document(postUserID).collection("Followers").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.e("followKey", "post user success ");
+                                followAdd.setVisibility(View.GONE);
+                                followMinus.setVisibility(View.VISIBLE);
+
+                            }
+                        });
+
+                        Toast.makeText(UserProfile.this, "Successful", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserProfile.this, "Some Error Occured", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+
+                    }
+                });
+
+
+            }
+        });
+
+        //unfollow feature
+        followMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ProgressDialog progressDialog = new ProgressDialog(UserProfile.this);
+                progressDialog.setMessage("PLease Wait...");
+                progressDialog.show();
+                firebaseFirestore.collection("Users").document(userID).collection("Following").document(postUserID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        firebaseFirestore.collection("Users").document(postUserID).collection("Followers").document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(UserProfile.this, "Unfollowed successfully", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                followMinus.setVisibility(View.GONE);
+                                followAdd.setVisibility(View.VISIBLE);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(UserProfile.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            }
+                        });
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserProfile.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+
+        //followers count
+        firebaseFirestore.collection("Users/" + postUserID + "/Followers").addSnapshotListener(UserProfile.this, new EventListener<QuerySnapshot>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count = documentSnapshots.size();
+                        Log.e("followKey", "onEvent: count follower: " + count);
+                        followerCount.setText("" + count);
+                    } else if (documentSnapshots.isEmpty()) {
+                        // followerCount.setText("0");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        //following count
+        firebaseFirestore.collection("Users/" + postUserID + "/Following").addSnapshotListener(UserProfile.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count2 = documentSnapshots.size();
+                        Log.e("followKey", "onEvent: count following: " + count2);
+
+                        followingCount.setText("" + count2);
+                    } else if (documentSnapshots.isEmpty()) {
+                        //   followingCount.setText("0");
+                    }
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        });
 
     }
 }

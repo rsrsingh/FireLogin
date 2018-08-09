@@ -8,14 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +22,6 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,7 +37,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,9 +66,10 @@ public class profileFragment extends Fragment {
     ImageView dots_menu;
     String coverUrl = null;
     String username = null;
+    TextView followersCount, followingCount;
 
     ArrayList<ProfileViewList> profileList = new ArrayList<>();
-    ;
+
     ProfileRecyclerAdapter profileRecyclerAdapter;
     RecyclerView recyclerView;
     private String post_id;
@@ -110,6 +106,8 @@ public class profileFragment extends Fragment {
         mImage = view.findViewById(R.id.prof_pic);
         mCover = view.findViewById(R.id.prof_mCover);
         spinner = (ProgressBar) view.findViewById(R.id.progressBar1);
+        followersCount = view.findViewById(R.id.prof_followersCount);
+        followingCount = view.findViewById(R.id.prof_followingCount);
         mNametxt = (TextView) view.findViewById(R.id.prof_name);
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Cover_images");
 
@@ -135,7 +133,7 @@ public class profileFragment extends Fragment {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
+                        switch (menuItem.getItemId()) {
                             case R.id.action_logout:
                                 Map<String, Object> tokenRemoveMap = new HashMap<>();
                                 tokenRemoveMap.put("token_id", "");
@@ -163,6 +161,39 @@ public class profileFragment extends Fragment {
                 });
                 popupMenu.show();
 
+            }
+        });
+
+        //followers count
+        firebaseFirestore.collection("Users").document(currentUser).collection("Followers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count = documentSnapshots.size();
+                        followersCount.setText("" + count);
+                    } else {
+
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        });
+
+        //following count
+        firebaseFirestore.collection("Users").document(currentUser).collection("Following").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count = documentSnapshots.size();
+                        followingCount.setText("" + count);
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 

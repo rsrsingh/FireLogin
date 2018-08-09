@@ -1,35 +1,25 @@
 package com.randeepsingh.blogfeed;
 
 
-import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.nightonke.boommenu.BoomButtons.HamButton;
-import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
-import com.nightonke.boommenu.BoomMenuButton;
+import com.luseen.spacenavigation.SpaceItem;
+import com.luseen.spacenavigation.SpaceNavigationView;
+import com.luseen.spacenavigation.SpaceOnClickListener;
 
 public class AccountMain extends AppCompatActivity {
 
-       Fragment fragment = null;
-    Fragment fragment2 = null;
+    Fragment fragment = null;
+
     SharedPref sharedPref;
-    BoomMenuButton bmb;
-    //  FrameLayout frameLayout;
-    int[] imageResources = new int[]{R.drawable.baseline_home_black_48, R.drawable.baseline_camera_alt_black_48, R.drawable.baseline_notifications_black_48, R.drawable.baseline_account_circle_black_48,};
-    String textArr[] = {"Home", "Add Post", "Notfifications", "Profile"};
-    String subTextArr[] = {"Explore world", "Present your masterpiece to the world", "Check notifications", "Check your personal profile"};
-    int val = 0;
-    FirebaseFirestore firebaseFirestore;
+
+    SpaceNavigationView spaceNavigationView;
+      FirebaseFirestore firebaseFirestore;
 
 
     @Override
@@ -45,74 +35,58 @@ public class AccountMain extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_main);
-        //setTheme(R.style.DarkTheme);
 
-     //   Log.v("accstate", "" + sharedPref.loadNightModeState().toString());
 
-        bmb = findViewById(R.id.bmb);
+        spaceNavigationView = findViewById(R.id.main_spaceView);
+        spaceNavigationView.initWithSaveInstanceState(savedInstanceState);
+        spaceNavigationView.addSpaceItem(new SpaceItem("home", R.drawable.baseline_home_black_48));
+        spaceNavigationView.addSpaceItem(new SpaceItem("search", R.drawable.baseline_search_black_48));
+        spaceNavigationView.addSpaceItem(new SpaceItem("notifications", R.drawable.baseline_notifications_black_48));
+        spaceNavigationView.addSpaceItem(new SpaceItem("profile", R.drawable.baseline_account_circle_black_48));
+        spaceNavigationView.showIconOnly();
+
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         fragment = homeFragment.newInstance();
-
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.acc_frame, fragment);
         fragmentTransaction.commit();
 
+        spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
+            @Override
+            public void onCentreButtonClick() {
+                fragment = addFragment.newInstance();
+                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction2.replace(R.id.acc_frame, fragment);
+                fragmentTransaction2.commit();
+            }
 
-        for (int i = 0; i < bmb.getPiecePlaceEnum().pieceNumber(); i++) {
-            HamButton.Builder builder = new HamButton.Builder()
-                    .normalImageRes(imageResources[i]).normalText(textArr[i]).subNormalText(subTextArr[i]);
-            builder.rippleEffect(true);
-            builder.shadowEffect(true);
-            builder.shadowOffsetX(20);
-            builder.textSize(20);
-
-            if (sharedPref.loadNightModeState() == true) {
-                bmb.setNormalColor(Color.BLACK);
-
-            } else {
-                bmb.setNormalColor(Color.WHITE);
+            @Override
+            public void onItemClick(int itemIndex, String itemName) {
+                if (itemName.equals("home")) {
+                    fragment = homeFragment.newInstance();
+                }
+                else  if (itemName.equals("search")){
+                 fragment = SearchFragment.newInstance();
+                }
+                else  if (itemName.equals("notifications")){
+                    fragment = notifFragment.newInstance();
+                }
+                else if (itemName.equals("profile")){
+                    fragment = profileFragment.newInstance();
+                }
+                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction2.replace(R.id.acc_frame, fragment);
+                fragmentTransaction2.commit();
 
             }
 
+            @Override
+            public void onItemReselected(int itemIndex, String itemName) {
 
-            bmb.addBuilder(builder);
-
-            builder.listener(new OnBMClickListener() {
-                @Override
-                public void onBoomButtonClick(int index) {
-
-                    switch (index) {
-                        case 0:
-                            val = val + 1;
-                            Log.v("val", "" + val);
-                            fragment2 = homeFragment.newInstance();
-
-
-                            break;
-                        case 1:
-
-                            fragment2 = addFragment.newInstance();
-                            break;
-                        case 2:
-
-                            fragment2 = notifFragment.newInstance();
-                            break;
-
-                        case 3:
-
-                            fragment2 = profileFragment.newInstance();
-                            break;
-                    }
-                    FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction2.replace(R.id.acc_frame, fragment2);
-                    fragmentTransaction2.commit();
-
-                }
-            });
-
-        }
+            }
+        });
 
 
 

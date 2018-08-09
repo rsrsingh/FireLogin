@@ -3,25 +3,19 @@ package com.randeepsingh.blogfeed;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -33,21 +27,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Comment;
-
-import java.io.ObjectInput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -185,6 +172,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         final String description_value = postList.get(position).getDescription_value();
 
         final String thumb_imageUrl = postList.get(position).getThumb_imageUrl();
+        String descValue = postList.get(position).getDescription_value();
 
 
         final String full_name = postList.get(position).getFull_name();
@@ -192,6 +180,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         holder.setProfileImage(profile_url);
         holder.setUserText(full_name);
+        holder.setCaption(descValue);
 
 
         Date date = postList.get(position).getTime_stamp();
@@ -481,6 +470,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         private ImageView dotsMenu, reportMenu;
         private FirebaseAuth mAuth;
         private ImageView comments;
+        private TextView caption;
 
 
         public ViewHolder(View itemView) {
@@ -513,6 +503,11 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         public void setPostImage(String postImage) {
             imageView = mView.findViewById(R.id.homeRow_post);
             Glide.with(context).load(postImage).into(imageView);
+        }
+
+        public void setCaption(String value) {
+            caption = mView.findViewById(R.id.homeRow_caption);
+            caption.setText(value);
         }
 
 

@@ -13,6 +13,8 @@
         <item name="viewcolor">#FF353535</item>
         <item name="actioncolor">#ffffff</item>
         <item name="fragBack">#ffffff</item>
+        <item name="spaceItem">#787878</item>
+        <item name="spaceSelected">#000000</item>
 
 
 
@@ -26,12 +28,13 @@
         <item name="colorPrimaryDark">#181818</item>
         <item name="colorAccent">#878787</item>
 
-        <item name="cardbackground">#4b4b4b</item>
+        <item name="cardbackground">#161616</item>
         <item name="textcolor">#ffffff</item>
         <item name="actioncolor">#333333</item>
         <item name="viewcolor">#a9a9a9</item>
         <item name="fragBack">#1e1e1e</item>
-
+        <item name="spaceItem">#bababa</item>
+        <item name="spaceSelected">#ffffff</item>
 
 
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>

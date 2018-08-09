@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/fragBack">
 
     <TextView
+        android:id="@+id/settingRow_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello Example"
-        android:textSize="23dp"
-        android:padding="10dp"
-        android:textColor="?attr/textcolor"
         android:background="?attr/selectableItemBackground"
-        android:id="@+id/settingRow_text"/>
+        android:padding="10dp"
+        android:text="Hello Example"
+        android:textColor="?attr/textcolor"
+        android:textSize="23sp" />
+
     <View
+        android:id="@+id/settingRow_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/settingRow_view"
-        app:layout_constraintTop_toBottomOf="@id/settingRow_text"
-        android:background="?attr/viewcolor"/>
+        android:background="?attr/viewcolor"
+        app:layout_constraintTop_toBottomOf="@id/settingRow_text" />
 
 </android.support.constraint.ConstraintLayout>

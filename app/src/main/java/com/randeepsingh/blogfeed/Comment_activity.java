@@ -2,15 +2,12 @@ package com.randeepsingh.blogfeed;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,8 +26,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +63,7 @@ public class Comment_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_activity);
 
-       // Log.v("bgid", "oncrerate called");
+        // Log.v("bgid", "oncrerate called");
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         commentList = new ArrayList<>();
@@ -79,10 +74,9 @@ public class Comment_activity extends AppCompatActivity {
         caption.setText("");
         cmntpost = findViewById(R.id.comment_send);
         cmntValue = findViewById(R.id.comment_ed1);
-       //Log.v("bgid",""+blogPostID);
+        //Log.v("bgid",""+blogPostID);
         blogPostID = getIntent().getStringExtra("blog_post_id");
         postUser = getIntent().getStringExtra("postUserID");
-
 
 
         // Log.v("bgidd",""+blogPostID);
@@ -94,8 +88,8 @@ public class Comment_activity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
-                String postCaption = task.getResult().getString("description_value");
-           // Log.v("captions", "" + postCaption);
+                    String postCaption = task.getResult().getString("description_value");
+                    // Log.v("captions", "" + postCaption);
                     caption.setText(postCaption);
 
                 }
@@ -117,7 +111,7 @@ public class Comment_activity extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             //  progressBar.setVisibility(View.GONE);
 
-           //                 Log.v("bgid", "query called");
+                            //                 Log.v("bgid", "query called");
                         }
                         commentRecyclerAdapter = new CommentRecyclerAdapter(commentList, blogPostID);
                         cRecyclerView.setLayoutManager(new LinearLayoutManager(Comment_activity.this));
@@ -145,7 +139,7 @@ public class Comment_activity extends AppCompatActivity {
                 cmntMap.put("comment_value", cmntVal);
                 cmntMap.put("user_id", userID);
                 cmntMap.put("time_stamp", FieldValue.serverTimestamp());
-cmntMap.put("post_id",blogPostID);
+                cmntMap.put("post_id", blogPostID);
 
                 final ProgressDialog progressDialog = new ProgressDialog(Comment_activity.this);
                 progressDialog.setMessage("Posting Comment");
@@ -165,7 +159,7 @@ cmntMap.put("post_id",blogPostID);
                 firebaseFirestore.collection("Users").document(postUser).collection("Notifications").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-          //              Log.v("mnotif2", "notif collection updated");
+                        //              Log.v("mnotif2", "notif collection updated");
                     }
                 });
 

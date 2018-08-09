@@ -7,7 +7,8 @@
         <attr name="viewcolor" format="color" />
         <attr name="actioncolor" format="color"/>
         <attr name="fragBack" format="color"/>
-
+<attr name="spaceItem" format="color"/>
+        <attr name="spaceSelected" format="color"/>
 
     </declare-styleable>
 
