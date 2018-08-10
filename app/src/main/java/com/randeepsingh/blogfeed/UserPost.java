@@ -197,7 +197,7 @@ public class UserPost extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), UserProfile.class);
-                intent.putExtra("post_user_id",postUserID );
+                intent.putExtra("post_user_id", postUserID);
                 startActivity(intent);
             }
         });

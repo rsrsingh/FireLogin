@@ -30,7 +30,7 @@ public class BlockListAdapter extends RecyclerView.Adapter<BlockListAdapter.View
     FirebaseAuth auth;
     String userID;
 
-     ProgressDialog progressDialog;
+    ProgressDialog progressDialog;
 
     public BlockListAdapter(ArrayList<Blog> blockList) {
         this.blockList = blockList;
@@ -46,7 +46,7 @@ public class BlockListAdapter extends RecyclerView.Adapter<BlockListAdapter.View
         auth = FirebaseAuth.getInstance();
         userID = auth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        progressDialog=new ProgressDialog(context);
+        progressDialog = new ProgressDialog(context);
         return new ViewHolder(view);
     }
 
@@ -75,7 +75,7 @@ public class BlockListAdapter extends RecyclerView.Adapter<BlockListAdapter.View
                             blockList.remove(position);
                             notifyDataSetChanged();
                             progressDialog.dismiss();
-                            context.startActivity(new Intent(context,AccountMain.class));
+                            context.startActivity(new Intent(context, AccountMain.class));
                         }
                     }
                 });

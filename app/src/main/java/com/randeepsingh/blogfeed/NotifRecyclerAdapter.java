@@ -53,7 +53,7 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
     public void onBindViewHolder(@NonNull final NotifRecyclerAdapter.ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
         final String postID = notifList.get(position).getPost_id();
-      //  Log.e("postID", "onBindViewHolder: "+ postID );
+        //  Log.e("postID", "onBindViewHolder: "+ postID );
 //final String commentID=comntList.get(position).CommentID;
 //imageURL=comntList.get(position).
 
@@ -145,7 +145,7 @@ public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdap
 
         public void setUsername(String uName) {
             username = mView.findViewById(R.id.notif_username);
-            username.setText(uName+" commented on your post:");
+            username.setText(uName + " commented on your post:");
         }
     }
 

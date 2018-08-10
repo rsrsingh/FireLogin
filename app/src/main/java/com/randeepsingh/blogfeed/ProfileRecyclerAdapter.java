@@ -45,7 +45,7 @@ public class ProfileRecyclerAdapter extends RecyclerView.Adapter<ProfileRecycler
 
         final String post_id = postList.get(position).getBlogPostrID();
         holder.setImage(postURL);
-      //  Log.e("mtest7", "onBindViewHolder: "+post_id );
+        //  Log.e("mtest7", "onBindViewHolder: "+post_id );
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

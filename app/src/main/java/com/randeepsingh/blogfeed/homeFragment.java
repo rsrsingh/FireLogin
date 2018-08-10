@@ -1,6 +1,7 @@
 package com.randeepsingh.blogfeed;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -41,14 +42,16 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
     private RecyclerView recyclerView;
     private ArrayList<Blog> postList;
     SharedPref sharedPref;
-
+    private boolean CHECK_FUNCTION = false;
 
     private ProgressBar progressBar;
+    String userID;
     FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
     private FirebaseAuth auth;
     private Toolbar toolbar;
     SwipeRefreshLayout swipeRefreshLayout;
+    String followingUserId;
 
     // private Boolean isfirstPageLoad = true;
 
@@ -73,7 +76,9 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
 
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        Log.e("mprocess", "onCreateView: ");
 
+        CHECK_FUNCTION = true;
 
         toolbar = view.findViewById(R.id.home_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -82,7 +87,6 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
 
 
         postList = new ArrayList<>();
-
         swipeRefreshLayout = view.findViewById(R.id.homeFrag_swipe);
 
         recyclerView = view.findViewById(R.id.home_view);
@@ -92,29 +96,92 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(postRecyclerAdapter);
         auth = FirebaseAuth.getInstance();
+        userID = auth.getCurrentUser().getUid();
 
 
         if (auth.getCurrentUser() != null) {
             firebaseFirestore = FirebaseFirestore.getInstance();
         }
 
-        Query query = firebaseFirestore.collection("Posts").orderBy("Time_stamp", Query.Direction.DESCENDING);
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        addItems();
+
+     /*
+            }
+        });
+*/
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                Log.e("homeFrag", "onRefresh: ");
+
+                postList.clear();
+                Log.e("mprocess", "onResume: ");
+
+                if (CHECK_FUNCTION == false) {
+                    Log.e("mprocess", "onResume: if");
+                    addItems();
+
+                    CHECK_FUNCTION = false;
+                } else {
+                    Log.d("mprocess", "onResume: else");
+                }
+
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+
+        // inflate the layout using the cloned inflater, not default inflater
+        return view;
+    }
+
+    private void addItems() {
+        firebaseFirestore.collection("Users").document(userID).collection("Following").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-
-                for (DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
+                for (final DocumentChange documentChange : documentSnapshots.getDocumentChanges()) {
 
                     if (documentChange.getType() == DocumentChange.Type.ADDED) {
 
-                        String postuser= documentChange.getDocument().getString("User_id");
-                        Log.e("postTest", "onEvent: "+postuser );
-                        String blogPostID = documentChange.getDocument().getId();
-                        final Blog blog = documentChange.getDocument().toObject(Blog.class).withID(blogPostID);
 
-                        postList.add(blog);
-                        progressBar.setVisibility(GONE);
-                        postRecyclerAdapter.notifyDataSetChanged();
+                        followingUserId = documentChange.getDocument().getId();
+                        Log.e("followingkey", "onEvent: " + followingUserId);
+
+
+                        Query firstQuery = firebaseFirestore.collection("Posts")
+                                .orderBy("Time_stamp", Query.Direction.DESCENDING)
+                                .whereEqualTo("User_id", followingUserId);
+
+                        firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                                try {
+                                    if (!documentSnapshots.isEmpty()) {
+                                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                            if (doc.getType() == DocumentChange.Type.ADDED) {
+
+
+                                                String blogPostID = doc.getDocument().getId();
+                                                Log.e("followingkey", "onEvent blogpostid: " + blogPostID);
+                                                final Blog blog = doc.getDocument().toObject(Blog.class).withID(blogPostID);
+
+                                                postList.add(blog);
+
+                                                progressBar.setVisibility(GONE);
+                                                postRecyclerAdapter.notifyDataSetChanged();
+                                                CHECK_FUNCTION = false;
+
+                                            }
+                                        }
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        });
 
 
                     }
@@ -124,20 +191,6 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                Log.e("homeFrag", "onRefresh: " );
-
-               recyclerView.setAdapter(postRecyclerAdapter);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-
-        // inflate the layout using the cloned inflater, not default inflater
-        return view;
     }
 
     public static Fragment newInstance() {
@@ -202,6 +255,37 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
         postRecyclerAdapter.setFilter(newPost);
 
         return true;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        postRecyclerAdapter.notifyDataSetChanged();
+        Log.e("mprocess", "onStart: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        postList.clear();
+        Log.e("mprocess", "onResume: ");
+
+        if (CHECK_FUNCTION == false) {
+            Log.e("mprocess", "onResume: if");
+            addItems();
+
+            CHECK_FUNCTION = false;
+        } else {
+            Log.d("mprocess", "onResume: else");
+        }
+/*
+
+        postRecyclerAdapter = new PostRecyclerAdapter(postList);
+        recyclerView.setAdapter(postRecyclerAdapter);
+*/
+
+
     }
 }
 

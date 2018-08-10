@@ -148,7 +148,7 @@ public class Accreg_one extends Fragment {
                     firebaseFirestore.collection("Users").document(mUserid).update(update).addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
-                         //   Log.v("updateTest", "on complete for users");
+                            //   Log.v("updateTest", "on complete for users");
                             //   Toast.makeText(getActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
                             fragment = SettingsFragment.newInstance();
                             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -157,23 +157,23 @@ public class Accreg_one extends Fragment {
                             firebaseFirestore.collection("Posts").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                                   // Log.v("updateTest", "snapshot for Posts");
+                                    // Log.v("updateTest", "snapshot for Posts");
                                     if (!documentSnapshots.isEmpty()) {
                                         for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                                             final String post_id = doc.getDocument().getId();
-                                           // Log.v("updateTest", "post id: " + post_id);
+                                            // Log.v("updateTest", "post id: " + post_id);
                                             firebaseFirestore.collection("Posts").document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                     if (task.getResult().exists()) {
-                                                       // Log.v("updateTest", "on complete inside posts");
+                                                        // Log.v("updateTest", "on complete inside posts");
                                                         String user_ID = task.getResult().getString("User_id");
                                                         if (mUserid.equals(user_ID)) {
                                                             firebaseFirestore.collection("Posts").document(post_id).update(update).addOnCompleteListener(new OnCompleteListener() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task task) {
                                                                     if (task.isSuccessful()) {
-                                                         //               Log.v("updateTest", "on complete for update posts");
+                                                                        //               Log.v("updateTest", "on complete for update posts");
                                                                     }
                                                                 }
                                                             });
@@ -225,7 +225,7 @@ public class Accreg_one extends Fragment {
 
     private void ImagePicker() {
 
-     //   Log.e("hi", "imagpicker");
+        //   Log.e("hi", "imagpicker");
 
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
@@ -249,7 +249,7 @@ public class Accreg_one extends Fragment {
             if (resultCode == getActivity().RESULT_OK) {
 
                 mainImageUri = result.getUri();
-       //         Log.v("mkeyreg", "mianuri= " + mainImageUri);
+                //         Log.v("mkeyreg", "mianuri= " + mainImageUri);
                 //  circleImageView.setImageURI(mainImageUri);
 
                 File thumb_filePathUri = new File(mainImageUri.getPath());
@@ -273,7 +273,7 @@ public class Accreg_one extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         thumb_downloadUrl = taskSnapshot.getDownloadUrl();
-         //               Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
+                        //               Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
 
                         circleImageView.setImageURI(mainImageUri);
                         bundle.putString("thumb_url", thumb_downloadUrl.toString());

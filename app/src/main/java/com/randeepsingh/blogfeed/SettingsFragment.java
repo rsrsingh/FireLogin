@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment   {
+public class SettingsFragment extends Fragment {
 
     private SharedPref sharedPref;
 
@@ -52,10 +52,10 @@ public class SettingsFragment extends Fragment   {
         listView = view.findViewById(R.id.settings_list);
 
         settingsList = new ArrayList();
-        setting_items=getResources().getStringArray(R.array.setting_items);
+        setting_items = getResources().getStringArray(R.array.setting_items);
 
-        for (int i=0;i<setting_items.length;i++){
-            SettingsData settingsData=new SettingsData(setting_items[i]);
+        for (int i = 0; i < setting_items.length; i++) {
+            SettingsData settingsData = new SettingsData(setting_items[i]);
             settingsList.add(settingsData);
         }
 
@@ -64,7 +64,7 @@ public class SettingsFragment extends Fragment   {
         accreg_two = new Accreg_two();
         blockFragment = new BlockFragment();
 
-        final SettingListAdapter settingListAdapter=new SettingListAdapter(getActivity(),settingsList);
+        final SettingListAdapter settingListAdapter = new SettingListAdapter(getActivity(), settingsList);
         settingListAdapter.notifyDataSetChanged();
         listView.setAdapter(settingListAdapter);
 

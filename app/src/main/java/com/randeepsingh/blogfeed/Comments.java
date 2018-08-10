@@ -3,7 +3,7 @@ package com.randeepsingh.blogfeed;
 import java.util.Date;
 
 class Comments extends CommentID {
-    private String comment_value,user_id,post_id;
+    private String comment_value, user_id, post_id;
     private Date time_stamp;
 
     public Comments() {

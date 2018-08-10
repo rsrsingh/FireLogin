@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.luseen.spacenavigation.SpaceItem;
@@ -19,7 +18,7 @@ public class AccountMain extends AppCompatActivity {
     SharedPref sharedPref;
 
     SpaceNavigationView spaceNavigationView;
-      FirebaseFirestore firebaseFirestore;
+    FirebaseFirestore firebaseFirestore;
 
 
     @Override
@@ -66,14 +65,11 @@ public class AccountMain extends AppCompatActivity {
             public void onItemClick(int itemIndex, String itemName) {
                 if (itemName.equals("home")) {
                     fragment = homeFragment.newInstance();
-                }
-                else  if (itemName.equals("search")){
-                 fragment = SearchFragment.newInstance();
-                }
-                else  if (itemName.equals("notifications")){
+                } else if (itemName.equals("search")) {
+                    fragment = SearchFragment.newInstance();
+                } else if (itemName.equals("notifications")) {
                     fragment = notifFragment.newInstance();
-                }
-                else if (itemName.equals("profile")){
+                } else if (itemName.equals("profile")) {
                     fragment = profileFragment.newInstance();
                 }
                 FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
@@ -87,8 +83,6 @@ public class AccountMain extends AppCompatActivity {
 
             }
         });
-
-
 
 
     }

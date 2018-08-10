@@ -15,26 +15,25 @@ public class NotificationService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         String messageTitle = remoteMessage.getNotification().getTitle();
-        String messageBody= remoteMessage.getNotification().getBody();
-        String click_action=remoteMessage.getNotification().getClickAction();
+        String messageBody = remoteMessage.getNotification().getBody();
+        String click_action = remoteMessage.getNotification().getClickAction();
 
-        String blogPostID=remoteMessage.getData().get("blog_post_id");
-
-
-
-        Intent resultIntent =new Intent(click_action);
-        resultIntent.putExtra("blog_post_id",blogPostID);
-
-        PendingIntent resultPendingIntent =PendingIntent.getActivity(this,0,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        String blogPostID = remoteMessage.getData().get("blog_post_id");
 
 
-        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
+        Intent resultIntent = new Intent(click_action);
+        resultIntent.putExtra("blog_post_id", blogPostID);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
                 .setSmallIcon(R.drawable.icon_round)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody).setAutoCancel(true).setContentIntent(resultPendingIntent);
 
-        NotificationManager notificationManager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0,mBuilder.build());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, mBuilder.build());
 
 
     }

@@ -7,15 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 
 public class SettingsMain extends AppCompatActivity {
 
-    Fragment fragment=null;
+    Fragment fragment = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_main);
 
-        fragment=SettingsFragment.newInstance();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settingsMain_frame,fragment);
+        fragment = SettingsFragment.newInstance();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settingsMain_frame, fragment);
         ft.commit();
 
     }

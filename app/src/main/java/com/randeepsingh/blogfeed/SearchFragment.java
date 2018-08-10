@@ -64,11 +64,11 @@ public class SearchFragment extends Fragment {
 
         searchList = new ArrayList<>();
         textInputEditText = view.findViewById(R.id.searchFrag_ed1);
-        firebaseFirestore=FirebaseFirestore.getInstance();
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         recyclerView = view.findViewById(R.id.searchFrag_recycler);
-        searchRecyclerAdapter=new SearchRecyclerAdapter(searchList);
+        searchRecyclerAdapter = new SearchRecyclerAdapter(searchList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(searchRecyclerAdapter);
 
@@ -81,12 +81,13 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                if (i2>0){
-                    String name= StringUtils.capitalize(charSequence.toString());
-                    Log.e("searchkey", "onTextChanged: "+name );
+                if (i2 > 0) {
+                    String name = StringUtils.capitalize(charSequence.toString());
+                    Log.e("searchkey", "onTextChanged: " + name);
                     CollectionReference ref = firebaseFirestore.collection("Users");
                     //this is the workaround for "LIKE" query of SQL
-                    Query query = ref.orderBy("full_name").startAt(name).endAt(name + "\uf8ff");
+
+                    Query query = ref.orderBy("full_name").startAt(charSequence.toString()).endAt(charSequence.toString() + "\uf8ff");
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -112,7 +113,7 @@ public class SearchFragment extends Fragment {
                             }
                         }
                     });
-                 }
+                }
 
             }
 

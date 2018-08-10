@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Blog extends com.randeepsingh.blogfeed.BlogPostID {
 
-    private String   description_value,thumb_imageUrl,full_name, thumb_id,User_id;
+    private String description_value, thumb_imageUrl, full_name, thumb_id, User_id;
     private Date Time_stamp;
 
     public Blog() {

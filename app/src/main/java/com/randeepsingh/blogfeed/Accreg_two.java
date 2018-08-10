@@ -52,7 +52,7 @@ public class Accreg_two extends Fragment {
     String mUserid;
     Bitmap cover_Bitmap = null;
     Uri coverImageUri = null;
-    Fragment fragment=null;
+    Fragment fragment = null;
     private StorageReference coverImgRef;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -110,7 +110,7 @@ public class Accreg_two extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
                     String profID = task.getResult().getString("thumb_id");
-                    String coverID=task.getResult().getString("cover_id");
+                    String coverID = task.getResult().getString("cover_id");
                     Glide.with(getActivity()).load(profID).into(circleImageView);
                     Glide.with(getActivity()).load(coverID).into(imageView);
                     imageView.setVisibility(View.VISIBLE);
@@ -180,10 +180,9 @@ public class Accreg_two extends Fragment {
                 if (coverImageUri == null) {
                     Toast.makeText(getActivity(), "Please upload a display picture", Toast.LENGTH_SHORT).show();
                 }
-                if(cover_downloadUrl==null){
+                if (cover_downloadUrl == null) {
                     Toast.makeText(getActivity(), "Please wait...", Toast.LENGTH_SHORT).show();
-                }
-                else if(cover_downloadUrl != null) {
+                } else if (cover_downloadUrl != null) {
 
                     Map update = new HashMap();
                     update.put("cover_id", cover_downloadUrl.toString());
@@ -191,9 +190,9 @@ public class Accreg_two extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task task) {
                             Toast.makeText(getActivity(), "Updated Succcessfully", Toast.LENGTH_SHORT).show();
-                            fragment=SettingsFragment.newInstance();
-                            FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.settingsMain_frame,fragment);
+                            fragment = SettingsFragment.newInstance();
+                            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.settingsMain_frame, fragment);
                             ft.commit();
 
                         }
@@ -210,7 +209,7 @@ public class Accreg_two extends Fragment {
 
     private void ImagePicker() {
 
-      //  Log.e("hi", "imagpicker");
+        //  Log.e("hi", "imagpicker");
 
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
@@ -229,7 +228,7 @@ public class Accreg_two extends Fragment {
             if (resultCode == getActivity().RESULT_OK) {
 
                 coverImageUri = result.getUri();
-        //        Log.v("mkeyreg", "mianuri= " + coverImageUri);
+                //        Log.v("mkeyreg", "mianuri= " + coverImageUri);
                 //  circleImageView.setImageURI(mainImageUri);
 
                 File thumb_filePathUri = new File(coverImageUri.getPath());
@@ -253,7 +252,7 @@ public class Accreg_two extends Fragment {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         cover_downloadUrl = taskSnapshot.getDownloadUrl();
-          //              Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
+                        //              Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
 
                         imageView.setImageURI(coverImageUri);
                         bundle2.putString("cover_url", cover_downloadUrl.toString());

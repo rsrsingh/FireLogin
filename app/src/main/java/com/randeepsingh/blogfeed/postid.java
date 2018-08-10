@@ -2,7 +2,8 @@ package com.randeepsingh.blogfeed;
 
 public class postid {
 
-    public postid(){}
+    public postid() {
+    }
 
     String postId = "";
 

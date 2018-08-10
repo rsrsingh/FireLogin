@@ -57,51 +57,50 @@ public class Accreg_three extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view=inflater.inflate(R.layout.fragment_accreg_three, container, false);
+        final View view = inflater.inflate(R.layout.fragment_accreg_three, container, false);
         bundle = this.getArguments();
-        thumb_url= bundle.get("thumb_url").toString();
-        cover_url=bundle.get("cover_url").toString();
+        thumb_url = bundle.get("thumb_url").toString();
+        cover_url = bundle.get("cover_url").toString();
 
 //        Log.v("Accreg_3","thumb:  "+thumb_url);
-  //      Log.v("Accreg_3","cover:  "+cover_url);
+        //      Log.v("Accreg_3","cover:  "+cover_url);
 
-        progressBar=view.findViewById(R.id.accreg3_progress);
-        imageView=view.findViewById(R.id.Accreg3_cover);
-        circleImageView=view.findViewById(R.id.Accreg3_profile);
-        btnNext=view.findViewById(R.id.AccReg3_btn);
-    username=view.findViewById(R.id.Accreg3_fname);
+        progressBar = view.findViewById(R.id.accreg3_progress);
+        imageView = view.findViewById(R.id.Accreg3_cover);
+        circleImageView = view.findViewById(R.id.Accreg3_profile);
+        btnNext = view.findViewById(R.id.AccReg3_btn);
+        username = view.findViewById(R.id.Accreg3_fname);
 
-        mfirebaseFirestore=FirebaseFirestore.getInstance();
-        mAuth=FirebaseAuth.getInstance();
-        userId=mAuth.getCurrentUser().getUid();
+        mfirebaseFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        userId = mAuth.getCurrentUser().getUid();
 
-username.setVisibility(view.GONE);
+        username.setVisibility(view.GONE);
         progressBar.setVisibility(view.VISIBLE);
 
 
-        try{
+        try {
 
             Glide.with(getActivity()).load(cover_url).into(imageView);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
 
-        Handler handler=new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                try{
+                try {
                     Glide.with(getActivity()).load(thumb_url).into(circleImageView);
 
+                } catch (Exception e) {
                 }
-                catch (Exception e){}
                 username.setVisibility(view.VISIBLE);
 
                 progressBar.setVisibility(view.GONE);
 
             }
-        },1500 );
+        }, 1500);
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,19 +112,19 @@ username.setVisibility(view.GONE);
 
         return view;
     }
+
     private void updateDetails() {
         String fullName;
-        fullName=username.getText().toString();
+        fullName = username.getText().toString();
 
 
+        Map<String, Object> user = new HashMap<>();
 
-        Map<String ,Object> user=new HashMap<>();
-
-        user.put("full_name",fullName);
-        user.put("thumb_id",thumb_url);
-        user.put("cover_id",cover_url);
+        user.put("full_name", fullName);
+        user.put("thumb_id", thumb_url);
+        user.put("cover_id", cover_url);
         //Log.v("mkeythumb",""+thumb_downloadUrl.toString());
-        final ProgressDialog progressDialog=new ProgressDialog(getActivity());
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("updating...");
         progressDialog.show();
         mfirebaseFirestore.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -133,23 +132,21 @@ username.setVisibility(view.GONE);
             public void onComplete(@NonNull Task<Void> task) {
 
 
-                        String tokenID= FirebaseInstanceId.getInstance().getToken();
-                        String user_id=mAuth.getCurrentUser().getUid();
-    //                    Log.v("tokenID"," "+tokenID+"  "+user_id);
-                        Map<String,Object> map=new HashMap<>();
-                        map.put("token_id",tokenID);
-                        mfirebaseFirestore.collection("Users").document(user_id).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                String tokenID = FirebaseInstanceId.getInstance().getToken();
+                String user_id = mAuth.getCurrentUser().getUid();
+                //                    Log.v("tokenID"," "+tokenID+"  "+user_id);
+                Map<String, Object> map = new HashMap<>();
+                map.put("token_id", tokenID);
+                mfirebaseFirestore.collection("Users").document(user_id).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
-                                progressDialog.dismiss();
-                                startActivity(new Intent(getActivity(),AccountMain.class));
-                                Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        startActivity(new Intent(getActivity(), AccountMain.class));
+                        Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
 
-                            }
-                        });
-
-
+                    }
+                });
 
 
             }
@@ -164,9 +161,10 @@ username.setVisibility(view.GONE);
 
 
     }
+
     public static Fragment newInstance() {
-    Accreg_three fragment =new Accreg_three();
-    return fragment;
+        Accreg_three fragment = new Accreg_three();
+        return fragment;
 
     }
 }

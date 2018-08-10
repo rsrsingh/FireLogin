@@ -19,24 +19,24 @@ public class ForgotPassword extends AppCompatActivity {
     Button button;
     String mEmail;
     FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        editText=findViewById(R.id.forgotPass_input);
-        button=findViewById(R.id.forgotPass_btn);
-auth=FirebaseAuth.getInstance();
+        editText = findViewById(R.id.forgotPass_input);
+        button = findViewById(R.id.forgotPass_btn);
+        auth = FirebaseAuth.getInstance();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (editText.equals("")){
+                if (editText.equals("")) {
                     Toast.makeText(ForgotPassword.this, "Please enter an email", Toast.LENGTH_SHORT).show();
-                }
-                else if (!editText.equals("")){
-                    mEmail=editText.getText().toString();
+                } else if (!editText.equals("")) {
+                    mEmail = editText.getText().toString();
                     auth.sendPasswordResetEmail(mEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -52,7 +52,6 @@ auth=FirebaseAuth.getInstance();
 
             }
         });
-
 
 
     }

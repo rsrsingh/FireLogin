@@ -1,6 +1,5 @@
 package com.randeepsingh.blogfeed;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -46,13 +45,12 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     public void onBindViewHolder(@NonNull SearchRecyclerAdapter.ViewHolder holder, int position) {
 
         final String fName = searchList.get(position).getFull_name();
-      final  String profUrl = searchList.get(position).getThumb_id();
-       final String userId=searchList.get(position).UserID;
+        final String profUrl = searchList.get(position).getThumb_id();
+        final String userId = searchList.get(position).UserID;
 
-        Log.e("searchkey", "onBindViewHolder: "+fName+ " profurl: "+profUrl );
+        Log.e("searchkey", "onBindViewHolder: " + fName + " profurl: " + profUrl);
 
-        if (!fName.equals(null) && !profUrl.equals(null))
-        {
+        if (!fName.equals(null) && !profUrl.equals(null)) {
             holder.userName(fName);
             holder.profImage(profUrl);
 
@@ -74,7 +72,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 
     @Override
     public int getItemCount() {
-        Log.e("searchkey", "getItemCount: "+searchList.size() );
+        Log.e("searchkey", "getItemCount: " + searchList.size());
         return searchList.size();
     }
 

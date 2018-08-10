@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Please enter all the info", Toast.LENGTH_SHORT).show();
         } else {
-progressDialog.show();
+            progressDialog.show();
             mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {

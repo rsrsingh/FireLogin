@@ -1,6 +1,6 @@
 package com.randeepsingh.blogfeed;
 
-class User  extends UserID{
+class User extends UserID {
     private String full_name, thumb_id;
 
     public User() {

@@ -39,7 +39,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     public CommentRecyclerAdapter(ArrayList<Comments> commentList, String blogPostID) {
         this.commentList = commentList;
         this.blogPostID = blogPostID;
-    //    Log.v("bgid", "constructor called");
+        //    Log.v("bgid", "constructor called");
     }
 
     @NonNull
@@ -47,7 +47,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     public CommentRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_row, parent, false);
-      //  Log.v("bgid", "onCreateviewHolder called");
+        //  Log.v("bgid", "onCreateviewHolder called");
         firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
         auth = FirebaseAuth.getInstance();
@@ -72,7 +72,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-          //      Log.v("bgid", "User info called");
+                //      Log.v("bgid", "User info called");
                 if (task.isSuccessful()) {
                     String userData = task.getResult().getString("full_name");
                     String profileUrl = task.getResult().getString("thumb_id");
@@ -80,7 +80,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
                     holder.setProfImage(profileUrl);
                     holder.setUsername(userData);
 
-            //        Log.v("cmnt", "fullname: " + userData + "  Comment value: " + message);
+                    //        Log.v("cmnt", "fullname: " + userData + "  Comment value: " + message);
 
                     //  Log.v("cmntms",""+message);
                 } else {
@@ -97,9 +97,9 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                if(task.getResult().exists()){
-                    String cmntUserID= task.getResult().getString("user_id");
-                    if(cmntUserID.equals(cUserID)){
+                if (task.getResult().exists()) {
+                    String cmntUserID = task.getResult().getString("user_id");
+                    if (cmntUserID.equals(cUserID)) {
                         holder.deleteView.setVisibility(View.VISIBLE);
                     }
 
@@ -136,8 +136,8 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         holder.usernameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(context,UserProfile.class);
-                intent.putExtra("post_user_id",userID);
+                Intent intent = new Intent(context, UserProfile.class);
+                intent.putExtra("post_user_id", userID);
                 context.startActivity(intent);
             }
         });
@@ -162,7 +162,6 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         private TextView usernameView;
         private TextView commentView;
         private ImageView deleteView;
-
 
 
         public ViewHolder(View itemView) {
