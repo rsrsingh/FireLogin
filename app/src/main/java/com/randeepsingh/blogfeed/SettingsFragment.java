@@ -4,11 +4,14 @@ package com.randeepsingh.blogfeed;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 
@@ -19,14 +22,13 @@ import java.util.ArrayList;
 public class SettingsFragment extends Fragment {
 
     private SharedPref sharedPref;
+    private CardView profile, cover, blocked;
+    private Switch mySwitch;
+    private Accreg_one accreg_one;
+    private Accreg_two accreg_two;
 
-    Accreg_one accreg_one;
-    Accreg_two accreg_two;
-    ArrayList<SettingsData> settingsList;
-    String setting_items[];
 
-    ListView listView;
-    BlockFragment blockFragment;
+    private BlockFragment blockFragment;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -45,56 +47,60 @@ public class SettingsFragment extends Fragment {
         }
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-       /* settingsList.add("Profile Image");
-        settingsList.add("Cover Image");
-        settingsList.add("Themes");
-        settingsList.add("Blocked Users");*/
-        listView = view.findViewById(R.id.settings_list);
-
-        settingsList = new ArrayList();
-        setting_items = getResources().getStringArray(R.array.setting_items);
-
-        for (int i = 0; i < setting_items.length; i++) {
-            SettingsData settingsData = new SettingsData(setting_items[i]);
-            settingsList.add(settingsData);
-        }
+        profile = view.findViewById(R.id.settings_card1);
+        cover = view.findViewById(R.id.settings_card2);
+        blocked = view.findViewById(R.id.settings_card3);
+        mySwitch = view.findViewById(R.id.settings_dark);
 
 
         accreg_one = new Accreg_one();
         accreg_two = new Accreg_two();
         blockFragment = new BlockFragment();
 
-        final SettingListAdapter settingListAdapter = new SettingListAdapter(getActivity(), settingsList);
-        settingListAdapter.notifyDataSetChanged();
-        listView.setAdapter(settingListAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        profile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String value = (String) settingListAdapter.getItem(i);
-                String value = settingsList.get(i).getSetting_items();
-                if (value.equals("Profile Image")) {
-                    getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, accreg_one).commit();
-                } else if (value.equals("Cover Image")) {
-                    getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, accreg_two).commit();
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, accreg_one).commit();
+            }
+        });
 
-                } else if (value.equals("Themes")) {
-                    startActivity(new Intent(getActivity(), ThemeActivity.class));
-                } else if (value.equals("Blocked Users")) {
-                    getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, blockFragment).commit();
+        cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, accreg_two).commit();
+            }
+        });
+        blocked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().beginTransaction().replace(R.id.settingsMain_frame, blockFragment).commit();
+            }
+        });
+
+        if (sharedPref.loadNightModeState() == true) {
+            mySwitch.setChecked(true);
+        }
+
+
+        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    sharedPref.setNightModeState(true);
+
+                    getActivity().startActivity(new Intent(getActivity(), AccountMain.class));
+                    getActivity().finish();
+                } else {
+                    sharedPref.setNightModeState(false);
+                    getActivity().startActivity(new Intent(getActivity(), AccountMain.class));
+                    getActivity().finish();
+
+
                 }
 
             }
         });
-
-       /* ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, settingsList);
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            }
-        });*/
 
 
         return view;

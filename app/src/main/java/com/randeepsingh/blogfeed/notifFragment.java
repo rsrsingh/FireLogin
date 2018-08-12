@@ -16,7 +16,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -34,15 +38,16 @@ import java.util.ArrayList;
  */
 public class notifFragment extends Fragment {
 
-    SharedPref sharedPref;
-    FirebaseAuth auth;
-    FirebaseFirestore firebaseFirestore;
-    String userID;
-    ArrayList<Comments> notifList;
-    RecyclerView recyclerView;
-    NotifRecyclerAdapter notifRecyclerAdapter;
-    ProgressBar progressBar;
-    Button btnClear;
+    private AdView adView;
+    private SharedPref sharedPref;
+    private FirebaseAuth auth;
+    private FirebaseFirestore firebaseFirestore;
+    private String userID;
+    private ArrayList<Comments> notifList;
+    private RecyclerView recyclerView;
+    private NotifRecyclerAdapter notifRecyclerAdapter;
+    private ProgressBar progressBar;
+    private Button btnClear;
 
     public notifFragment() {
         // Required empty public constructor
@@ -61,6 +66,12 @@ public class notifFragment extends Fragment {
         }
 
         View view = inflater.inflate(R.layout.fragment_notif, container, false);
+
+
+        MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/5707326671");
+        adView = view.findViewById(R.id.notif_bannerAds);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        adView.loadAd(adRequest);
 
         notifList = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
@@ -109,11 +120,15 @@ public class notifFragment extends Fragment {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
 
-                                            getActivity().startActivity(new Intent(getContext(), AccountMain.class));
-                                            getActivity().finish();
                                             Toast.makeText(getActivity(), "Cleared", Toast.LENGTH_SHORT).show();
                                             //        notifRecyclerAdapter.notifyDataSetChanged();
                                         }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        notifRecyclerAdapter.notifyDataSetChanged();
+                                        Toast.makeText(getActivity(), "Some Error Occured", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -122,6 +137,9 @@ public class notifFragment extends Fragment {
 
                     }
                 });
+                getActivity().startActivity(new Intent(getContext(), AccountMain.class));
+                getActivity().finish();
+                Toast.makeText(getActivity(), "Cleared", Toast.LENGTH_SHORT).show();
             }
         });
 

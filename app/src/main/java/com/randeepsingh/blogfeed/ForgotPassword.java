@@ -15,10 +15,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPassword extends AppCompatActivity {
 
-    EditText editText;
-    Button button;
-    String mEmail;
-    FirebaseAuth auth;
+    private EditText editText;
+    private Button button;
+    private String mEmail;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

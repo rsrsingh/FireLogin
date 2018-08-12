@@ -113,10 +113,44 @@
                 android:textColor="?attr/textcolor"
 
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/home_comment"
-           app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/homeRow_likeU"
                 app:layout_constraintTop_toBottomOf="@id/homeRow_post" />
 
+            <ImageView
+                android:id="@+id/homeRow_likeU"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:src="@drawable/like_unselected"
+                app:layout_constraintRight_toLeftOf="@id/homeRow_likeCount"
+                app:layout_constraintTop_toBottomOf="@id/homeRow_post"
+                android:tint="?attr/textcolor"/>
+
+            <ImageView
+                android:id="@+id/homeRow_likeS"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/like_selected"
+                android:tint="#fc1f23"
+                android:padding="5dp"
+                app:layout_constraintRight_toLeftOf="@id/homeRow_likeCount"
+                app:layout_constraintTop_toBottomOf="@id/homeRow_post"
+                android:layout_marginRight="5dp"/>
+
+            <TextView
+                android:id="@+id/homeRow_likeCount"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text=""
+                android:textColor="?attr/textcolor"
+                android:textSize="22dp"
+                app:layout_constraintRight_toLeftOf="@id/home_comment"
+                app:layout_constraintTop_toBottomOf="@id/homeRow_post" />
 
             <ImageView
                 android:id="@+id/home_comment"
@@ -127,7 +161,6 @@
                 android:layout_marginTop="5dp"
                 android:src="@drawable/baseline_comment_black_48"
                 android:tint="?attr/textcolor"
-                app:layout_constraintBottom_toBottomOf="parent"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/homeRow_caption"

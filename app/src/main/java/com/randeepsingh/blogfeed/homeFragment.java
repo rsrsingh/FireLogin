@@ -41,17 +41,17 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
 
     private RecyclerView recyclerView;
     private ArrayList<Blog> postList;
-    SharedPref sharedPref;
+    private SharedPref sharedPref;
     private boolean CHECK_FUNCTION = false;
 
     private ProgressBar progressBar;
-    String userID;
-    FirebaseFirestore firebaseFirestore;
+    private String userID;
+    private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
     private FirebaseAuth auth;
     private Toolbar toolbar;
-    SwipeRefreshLayout swipeRefreshLayout;
-    String followingUserId;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private String followingUserId;
 
     // private Boolean isfirstPageLoad = true;
 
@@ -114,22 +114,22 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
             @Override
             public void onRefresh() {
 
-                Log.e("homeFrag", "onRefresh: ");
+
 
                 postList.clear();
-                Log.e("mprocess", "onResume: ");
+                Log.e("mprocess", "onRefresh: ");
 
                 if (CHECK_FUNCTION == false) {
-                    Log.e("mprocess", "onResume: if");
+                    Log.e("mprocess", "if");
                     addItems();
 
                     CHECK_FUNCTION = false;
                 } else {
-                    Log.d("mprocess", "onResume: else");
+                    Log.d("mprocess", "else");
                 }
 
 
-                swipeRefreshLayout.setRefreshing(false);
+
             }
         });
 
@@ -173,6 +173,12 @@ public class homeFragment extends Fragment implements SearchView.OnQueryTextList
                                                 progressBar.setVisibility(GONE);
                                                 postRecyclerAdapter.notifyDataSetChanged();
                                                 CHECK_FUNCTION = false;
+                                                try{
+                                                    swipeRefreshLayout.setRefreshing(false);
+                                                }
+                                                catch (Exception e2){
+                                                    e2.printStackTrace();
+                                                }
 
                                             }
                                         }

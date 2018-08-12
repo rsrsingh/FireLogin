@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,14 +36,17 @@ import java.util.ArrayList;
  */
 public class SearchFragment extends Fragment {
 
-    SharedPref sharedPref;
-    RecyclerView recyclerView;
-    SearchRecyclerAdapter searchRecyclerAdapter;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth firebaseAuth;
-    String UserId;
-    ArrayList<User> searchList;
-    TextInputEditText textInputEditText;
+
+
+    private AdView adView;
+    private SharedPref sharedPref;
+    private RecyclerView recyclerView;
+    private SearchRecyclerAdapter searchRecyclerAdapter;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
+    private String UserId;
+    private ArrayList<User> searchList;
+    private TextInputEditText textInputEditText;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -61,6 +67,12 @@ public class SearchFragment extends Fragment {
 
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/1095479460");
+        adView = view.findViewById(R.id.search_bannerAds);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        adView.loadAd(adRequest);
+
 
         searchList = new ArrayList<>();
         textInputEditText = view.findViewById(R.id.searchFrag_ed1);

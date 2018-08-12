@@ -24,12 +24,12 @@ import java.util.ArrayList;
  */
 public class BlockFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    FirebaseFirestore firebaseFirestore;
-    ArrayList<Blog> blockList;
-    BlockListAdapter blockListAdapter;
-    FirebaseAuth auth;
-    String userID;
+    private RecyclerView recyclerView;
+    private FirebaseFirestore firebaseFirestore;
+    private ArrayList<Blog> blockList;
+    private BlockListAdapter blockListAdapter;
+    private FirebaseAuth auth;
+    private  String userID;
 
     public BlockFragment() {
         // Required empty public constructor

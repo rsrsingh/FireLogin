@@ -54,24 +54,24 @@ public class profileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private Uri mainImageURI;
     private StorageReference coverImgRef;
-    SharedPref sharedPref;
+    private SharedPref sharedPref;
     private CircleImageView mImage;
-    Bitmap cover_Bitmap = null;
+    private Bitmap cover_Bitmap = null;
     private ImageView mCover;
     private String mProfid = null;
     private String currentUser;
-    Uri cover_downloadUrl = null;
+    private Uri cover_downloadUrl = null;
     private ProgressBar spinner;
-    TextView mNametxt;
-    ImageView dots_menu;
-    String coverUrl = null;
-    String username = null;
-    TextView followersCount, followingCount;
+    private  TextView mNametxt;
+    private ImageView dots_menu;
+    private String coverUrl = null;
+    private String username = null;
+    private  TextView followersCount, followingCount;
 
-    ArrayList<ProfileViewList> profileList = new ArrayList<>();
+    private ArrayList<ProfileViewList> profileList = new ArrayList<>();
 
-    ProfileRecyclerAdapter profileRecyclerAdapter;
-    RecyclerView recyclerView;
+    private ProfileRecyclerAdapter profileRecyclerAdapter;
+    private  RecyclerView recyclerView;
     private String post_id;
     private ProfileViewList profileViewList;
 

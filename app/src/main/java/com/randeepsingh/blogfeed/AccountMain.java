@@ -1,6 +1,7 @@
 package com.randeepsingh.blogfeed;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,12 +14,12 @@ import com.luseen.spacenavigation.SpaceOnClickListener;
 
 public class AccountMain extends AppCompatActivity {
 
-    Fragment fragment = null;
+   private Fragment fragment = null;
 
-    SharedPref sharedPref;
+   private SharedPref sharedPref;
 
-    SpaceNavigationView spaceNavigationView;
-    FirebaseFirestore firebaseFirestore;
+   private SpaceNavigationView spaceNavigationView;
+    private FirebaseFirestore firebaseFirestore;
 
 
     @Override
@@ -55,10 +56,8 @@ public class AccountMain extends AppCompatActivity {
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-                fragment = addFragment.newInstance();
-                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction2.replace(R.id.acc_frame, fragment);
-                fragmentTransaction2.commit();
+               startActivity(new Intent(AccountMain.this,AddPost.class));
+
             }
 
             @Override
@@ -80,6 +79,18 @@ public class AccountMain extends AppCompatActivity {
 
             @Override
             public void onItemReselected(int itemIndex, String itemName) {
+                if (itemName.equals("home")) {
+                    fragment = homeFragment.newInstance();
+                } else if (itemName.equals("search")) {
+                    fragment = SearchFragment.newInstance();
+                } else if (itemName.equals("notifications")) {
+                    fragment = notifFragment.newInstance();
+                } else if (itemName.equals("profile")) {
+                    fragment = profileFragment.newInstance();
+                }
+                FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction2.replace(R.id.acc_frame, fragment);
+                fragmentTransaction2.commit();
 
             }
         });

@@ -43,21 +43,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserPost extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    EditText cmntEditText;
-    ImageView btnSend, postImage, btnDelete;
-    CircleImageView userProf;
-    ProgressDialog progressDialog;
-    TextView uName, time;
-    String blogPostID;
-    String userID;
-    FirebaseAuth auth;
-    FirebaseFirestore firebaseFirestore;
-    ArrayList<Comments> commentList;
-    SharedPref sharedPref;
-    CommentRecyclerAdapter commentRecyclerAdapter;
-    ProgressBar progressBarup;
-    String postUserID;
+    private RecyclerView recyclerView;
+    private EditText cmntEditText;
+    private ImageView btnSend, postImage, btnDelete;
+    private CircleImageView userProf;
+    private ProgressDialog progressDialog;
+    private TextView uName, time;
+    private String blogPostID;
+    private String userID;
+    private FirebaseAuth auth;
+    private FirebaseFirestore firebaseFirestore;
+    private ArrayList<Comments> commentList;
+    private SharedPref sharedPref;
+    private CommentRecyclerAdapter commentRecyclerAdapter;
+    private ProgressBar progressBarup;
+    private String postUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

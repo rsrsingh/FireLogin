@@ -52,19 +52,19 @@ public class Accreg_one extends Fragment {
 
     private CircleImageView circleImageView;
     private StorageReference mStorageRef;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth mAuth;
-    String mUserid;
-    Fragment fragment = null;
-    Bitmap thumb_Bitmap = null;
-    Uri mainImageUri = null;
+    private  FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth mAuth;
+    private   String mUserid;
+    private  Fragment fragment = null;
+    private  Bitmap thumb_Bitmap = null;
+    private   Uri mainImageUri = null;
     private StorageReference thumbImgRef;
-    Uri thumb_downloadUrl = null;
+    private  Uri thumb_downloadUrl = null;
     private Button btnNext, btnUpdate;
-    Bundle bundle;
-    FirebaseFirestore mfirebaseFirestore;
-    SharedPref sharedPref;
-    ProgressBar progressBar;
+    private   Bundle bundle;
+    private  FirebaseFirestore mfirebaseFirestore;
+    private  SharedPref sharedPref;
+    private  ProgressBar progressBar;
 
     public Accreg_one() {
         // Required empty public constructor

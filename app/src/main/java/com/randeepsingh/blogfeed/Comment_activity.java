@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -36,18 +37,18 @@ public class Comment_activity extends AppCompatActivity {
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    String userID;
-    SharedPref sharedPref;
+    private  String userID;
+    private  SharedPref sharedPref;
 
-    ImageView cmntpost;
-    EditText cmntValue;
-    RecyclerView cRecyclerView;
-    ArrayList<Comments> commentList;
-    CommentRecyclerAdapter commentRecyclerAdapter;
-    String blogPostID;
-    TextView caption;
-    ProgressBar progressBar;
-    String postUser;
+    private  ImageView cmntpost;
+    private EditText cmntValue;
+    private RecyclerView cRecyclerView;
+    private ArrayList<Comments> commentList;
+    private CommentRecyclerAdapter commentRecyclerAdapter;
+    private String blogPostID;
+    private TextView caption;
+    private ProgressBar progressBar;
+    private String postUser;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -94,6 +95,11 @@ public class Comment_activity extends AppCompatActivity {
 
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(Comment_activity.this, "Some error occured", Toast.LENGTH_SHORT).show();
+            }
         });
 
         //commments Retreving
@@ -133,36 +139,56 @@ public class Comment_activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String cmntVal = cmntValue.getText().toString();
-                cmntValue.setText(null);
+                
+                if (cmntVal.equals("") || cmntVal.equals(null)) {
+                    Toast.makeText(Comment_activity.this, "Please write a comment", Toast.LENGTH_SHORT).show();
+                }
+                else{
 
-                Map<String, Object> cmntMap = new HashMap<>();
-                cmntMap.put("comment_value", cmntVal);
-                cmntMap.put("user_id", userID);
-                cmntMap.put("time_stamp", FieldValue.serverTimestamp());
-                cmntMap.put("post_id", blogPostID);
+                    cmntValue.setText(null);
 
-                final ProgressDialog progressDialog = new ProgressDialog(Comment_activity.this);
-                progressDialog.setMessage("Posting Comment");
-                progressDialog.show();
-                firebaseFirestore.collection("Posts").document(blogPostID).collection("Comments").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                    Map<String, Object> cmntMap = new HashMap<>();
+                    cmntMap.put("comment_value", cmntVal);
+                    cmntMap.put("user_id", userID);
+                    cmntMap.put("time_stamp", FieldValue.serverTimestamp());
+                    cmntMap.put("post_id", blogPostID);
 
-                        if (task.isSuccessful()) {
-                            progressDialog.dismiss();
-                            Toast.makeText(Comment_activity.this, "Comment Posted", Toast.LENGTH_SHORT).show();
-                            commentRecyclerAdapter.notifyDataSetChanged();
+                    final ProgressDialog progressDialog = new ProgressDialog(Comment_activity.this);
+                    progressDialog.setMessage("Posting Comment");
+                    progressDialog.show();
+                    firebaseFirestore.collection("Posts").document(blogPostID).collection("Comments").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+
+                            if (task.isSuccessful()) {
+                                progressDialog.dismiss();
+                                Toast.makeText(Comment_activity.this, "Comment Posted", Toast.LENGTH_SHORT).show();
+                                commentRecyclerAdapter.notifyDataSetChanged();
+                            }
                         }
-                    }
-                });
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Comment_activity.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                firebaseFirestore.collection("Users").document(postUser).collection("Notifications").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        //              Log.v("mnotif2", "notif collection updated");
-                    }
-                });
+                    firebaseFirestore.collection("Users").document(postUser).collection("Notifications").add(cmntMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            //              Log.v("mnotif2", "notif collection updated");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(Comment_activity.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
+
+
+                }
+                
 
             }
         });

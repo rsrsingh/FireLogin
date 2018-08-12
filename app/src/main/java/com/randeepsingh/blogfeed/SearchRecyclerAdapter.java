@@ -22,10 +22,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAdapter.ViewHolder> {
 
 
-    ArrayList<User> searchList;
+    private  ArrayList<User> searchList;
     public static Context context;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth auth;
+    private FirebaseFirestore firebaseFirestore;
+    private  FirebaseAuth auth;
 
     public SearchRecyclerAdapter(ArrayList<User> searchList) {
         this.searchList = searchList;
@@ -47,6 +47,8 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         final String fName = searchList.get(position).getFull_name();
         final String profUrl = searchList.get(position).getThumb_id();
         final String userId = searchList.get(position).UserID;
+
+        Log.e("followkey", "onBindViewHolder: user: "+userId );
 
         Log.e("searchkey", "onBindViewHolder: " + fName + " profurl: " + profUrl);
 

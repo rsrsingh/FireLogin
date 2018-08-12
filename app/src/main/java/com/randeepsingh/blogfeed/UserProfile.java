@@ -36,23 +36,23 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfile extends AppCompatActivity {
 
-    ImageView coverImage;
-    CircleImageView profImage;
-    RecyclerView recyclerView;
-    Toolbar toolbar;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth auth;
-    ArrayList<ProfileViewList> postList = new ArrayList<>();
-    TextView uName;
-    String userID;
-    SharedPref sharedPref;
-    String postUserID;
-    TextView followingCount, followerCount;
-    ProfileRecyclerAdapter profileRecyclerAdapter;
-    String username, thumbURL, coverURL;
-    ImageView followAdd, followMinus;
+    private ImageView coverImage;
+    private CircleImageView profImage;
+    private RecyclerView recyclerView;
+    private Toolbar toolbar;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private ArrayList<ProfileViewList> postList = new ArrayList<>();
+    private TextView uName;
+    private String userID;
+    private SharedPref sharedPref;
+    private String postUserID;
+    private TextView followingCount, followerCount;
+    private ProfileRecyclerAdapter profileRecyclerAdapter;
+    private String username, thumbURL, coverURL;
+    private ImageView followAdd, followMinus;
 
-    String post_id;
+    private String post_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

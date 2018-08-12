@@ -56,7 +56,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserProfile" />
-        <activity android:name=".ForgotPassword"></activity>
+        <activity android:name=".ForgotPassword" />
+        <activity android:name=".AddPost"></activity>
     </application>
 
 </manifest>

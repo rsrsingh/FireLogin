@@ -18,11 +18,11 @@ import java.util.ArrayList;
 public class ProfileRecyclerAdapter extends RecyclerView.Adapter<ProfileRecyclerAdapter.ViewHolder> {
 
     public static Context context;
-    FirebaseFirestore firebaseFirestore;
-    ArrayList<ProfileViewList> postList;
+    private FirebaseFirestore firebaseFirestore;
+    private ArrayList<ProfileViewList> postList;
     private String postURL;
 
-    FirebaseAuth auth;
+    private FirebaseAuth auth;
 
     public ProfileRecyclerAdapter(ArrayList<ProfileViewList> postList) {
         this.postList = postList;

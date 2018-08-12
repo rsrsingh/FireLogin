@@ -1,67 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".SearchFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-       android:background="?attr/fragBack"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:background="?attr/fragBack">
 
 
         <Toolbar
+            android:id="@+id/searchFrag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:title="Search"
-            android:id="@+id/searchFrag_toolbar"
             android:background="?attr/actioncolor"
-            android:titleTextColor="?attr/textcolor"></Toolbar>
+            android:title="Search"
+            android:titleTextColor="?attr/textcolor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></Toolbar>
+
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/search_bannerAds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-5059411314324031/1095479460"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchFrag_view"></com.google.android.gms.ads.AdView>
+
 
         <View
+            android:id="@+id/searchFrag_view"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            app:layout_constraintTop_toBottomOf="@id/searchFrag_toolbar"
-            app:layout_constraintStart_toStartOf="parent"
+            android:background="?attr/viewcolor"
             app:layout_constraintEnd_toEndOf="parent"
-           android:id="@+id/searchFrag_view"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchFrag_toolbar" />
 
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/searchFrag_txtlayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-android:id="@+id/searchFrag_txtlayout"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="10dp"
             android:textColorHint="?attr/textcolor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFrag_view">
+            app:layout_constraintTop_toBottomOf="@id/search_bannerAds">
 
             <android.support.design.widget.TextInputEditText
+                android:id="@+id/searchFrag_ed1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-android:id="@+id/searchFrag_ed1"
                 android:hint="Search By Name"
-                android:textColor="?attr/textcolor"
-                android:textColorHint="?attr/textcolor"
                 android:padding="8dp"
-            />
+                android:textColor="?attr/textcolor"
+                android:textColorHint="?attr/textcolor" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/searchFrag_recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:id="@+id/searchFrag_recycler"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchFrag_txtlayout"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            ></android.support.v7.widget.RecyclerView>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchFrag_txtlayout"></android.support.v7.widget.RecyclerView>
 
     </android.support.constraint.ConstraintLayout>
 

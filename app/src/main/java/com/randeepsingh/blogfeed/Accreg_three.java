@@ -35,15 +35,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class Accreg_three extends Fragment {
-    ImageView imageView;
-    CircleImageView circleImageView;
-    Bundle bundle;
-    String thumb_url;
-    String cover_url;
-    Button btnNext;
+
+
+    private ImageView imageView;
+    private CircleImageView circleImageView;
+    private Bundle bundle;
+    private String thumb_url;
+    private  String cover_url;
+    private Button btnNext;
     private String userId;
     private FirebaseAuth mAuth;
-    FirebaseFirestore mfirebaseFirestore;
+    private  FirebaseFirestore mfirebaseFirestore;
     private EditText username;
     private ProgressBar progressBar;
 

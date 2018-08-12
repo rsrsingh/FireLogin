@@ -10,7 +10,7 @@
 
         <item name="cardbackground">#ffffff</item>
         <item name="textcolor">#252525</item>
-        <item name="viewcolor">#FF353535</item>
+        <item name="viewcolor">#565656</item>
         <item name="actioncolor">#ffffff</item>
         <item name="fragBack">#ffffff</item>
         <item name="spaceItem">#787878</item>
@@ -18,7 +18,7 @@
 
 
 
-        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
     <!-- Dark mode theme. -->
@@ -37,7 +37,7 @@
         <item name="spaceSelected">#ffffff</item>
 
 
-        <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="android:windowAnimationStyle">@null</item>
 
     </style>
 

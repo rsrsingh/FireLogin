@@ -7,26 +7,118 @@
 android:background="?attr/fragBack"
     tools:context=".SettingsFragment">
 
-    <ListView
-        android:id="@+id/settings_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/settings_view"></ListView>
-
-    <android.support.v7.widget.Toolbar
+    <Toolbar
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="?attr/actioncolor"
-        app:title="Settings"
-        app:titleTextColor="?attr/textcolor" />
+        android:title="Settings"
+        android:titleTextColor="?attr/textcolor"
+        app:layout_constraintTop_toTopOf="parent"></Toolbar>
 
-    <View
-        android:id="@+id/settings_view"
+    <android.support.v7.widget.CardView
+        android:id="@+id/settings_card1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/viewcolor"
-        app:layout_constraintTop_toBottomOf="@id/settings_toolbar" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="5dp"
+        android:background="?attr/cardbackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_toolbar">
+
+        <TextView
+            android:id="@+id/settings_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="?attr/cardbackground"
+            android:padding="10dp"
+            android:text="Profile Image"
+            android:textColor="?attr/textcolor"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/settings_card2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="5dp"
+        android:background="?attr/cardbackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_card1">
+
+        <TextView
+            android:id="@+id/settings_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/cardbackground"
+            android:padding="10dp"
+            android:text="Cover Image"
+            android:textColor="?attr/textcolor"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/settings_card3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="5dp"
+        android:background="?attr/cardbackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_card2">
+
+        <TextView
+            android:id="@+id/settings_blockusers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/cardbackground"
+            android:padding="10dp"
+            android:text="Blocked Users"
+            android:textColor="?attr/textcolor"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/settings_card4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="5dp"
+        android:background="?attr/cardbackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_card3">
+
+        <Switch
+            android:id="@+id/settings_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/cardbackground"
+            android:padding="10dp"
+            android:text="Dark Mode"
+            android:textColor="?attr/textcolor"
+            android:textSize="20dp"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+    </android.support.v7.widget.CardView>
 
 
 </android.support.constraint.ConstraintLayout>

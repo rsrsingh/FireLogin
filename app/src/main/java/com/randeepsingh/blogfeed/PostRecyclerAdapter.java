@@ -32,6 +32,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -50,10 +51,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     public static Context context;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    String userID;
-    String userCheck;
-    String userPass;
-    String userCheck2;
+    private String userID;
+    private String userCheck;
+    private String userPass;
+    private String userCheck2;
 
     private SharedPref sharedPref;
 
@@ -165,6 +166,72 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     }
                 }
 
+            }
+        });
+
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.getResult().exists()) {
+                    holder.likeS.setVisibility(View.VISIBLE);
+                } else {
+                    holder.likeU.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+           if (!documentSnapshots.isEmpty()){
+               int count = documentSnapshots.size();
+               holder.setLikeCount(count);
+           }
+           else{
+             holder.likeCount.setText("");
+           }
+            }
+        });
+
+        holder.likeU.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String,Object> map =new HashMap<>();
+                map.put("time_stamp", FieldValue.serverTimestamp());
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+                        holder.likeU.setVisibility(View.GONE);
+                        holder.likeS.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        holder.likeS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
+                        holder.likeS.setVisibility(View.GONE);
+                        holder.likeU.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -471,7 +538,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         private FirebaseAuth mAuth;
         private ImageView comments;
         private TextView caption;
-
+        private ImageView likeS, likeU;
+        private TextView likeCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -481,6 +549,11 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             reportMenu = mView.findViewById(R.id.report_dots);
             reportMenu.setVisibility(View.GONE);
             dotsMenu.setVisibility(View.GONE);
+            likeS = mView.findViewById(R.id.homeRow_likeS);
+            likeCount=mView.findViewById(R.id.homeRow_likeCount);
+            likeU = mView.findViewById(R.id.homeRow_likeU);
+            likeS.setVisibility(View.GONE);
+            likeU.setVisibility(View.GONE);
         }
 
         public void setProfileImage(String profileImage) {
@@ -510,6 +583,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             caption.setText(value);
         }
 
+        public void setLikeCount(int count){
+            likeCount.setText(""+ count);
+        }
 
     }
 

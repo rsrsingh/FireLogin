@@ -33,7 +33,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-    String cUserID;
+    private String cUserID;
 
 
     public CommentRecyclerAdapter(ArrayList<Comments> commentList, String blogPostID) {

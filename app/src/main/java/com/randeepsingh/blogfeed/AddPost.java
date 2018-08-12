@@ -1,17 +1,14 @@
 package com.randeepsingh.blogfeed;
 
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,65 +40,56 @@ import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
+public class AddPost extends AppCompatActivity {
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class addFragment extends Fragment {
 
-    AdView adView;
+    private AdView adView;
     private ImageView mImageview;
     private TextInputEditText mCaption;
     private Button mBtnPublish;
     private StorageReference coverImgRef;
     private Uri mainImageUri = null;
-    Uri cover_downloadUrl;
-    homeFragment homeFrag = null;
-    Bitmap post_Bitmap = null;
-    String fullName;
-    String thumbID;
-    SharedPref sharedPref;
-    byte[] thumb_byte;
-    String postLink;
-    String token_id;
+    private Uri cover_downloadUrl;
+    private homeFragment homeFrag = null;
+    private Bitmap post_Bitmap = null;
+    private String fullName;
+    private String thumbID;
+    private SharedPref sharedPref;
+    private byte[] thumb_byte;
+    private String postLink;
+    private String token_id;
     //  private StorageReference mStorage;
     private FirebaseAuth mAuth;
-    StorageReference thumb_filePath;
+    private StorageReference thumb_filePath;
     private String mUserid;
 
     private String postDesc;
 
     private FirebaseFirestore mFirebaseFirestore;
     private final String randomName = UUID.randomUUID().toString();
-    ;
-
-    public addFragment() {
-        // Required empty public constructor
-    }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        sharedPref = new SharedPref(getActivity());
+    protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = new SharedPref(this);
         if (sharedPref.loadNightModeState() == true) {
-            getActivity().setTheme(R.style.DarkTheme);
+            this.setTheme(R.style.DarkTheme);
         } else if (sharedPref.loadNightModeState() == false) {
-            getActivity().setTheme(R.style.AppTheme);
+            this.setTheme(R.style.AppTheme);
         }
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_post);
+
         ImagePicker();
 
-        View view = inflater.inflate(R.layout.fragment_add, container, false);
-
-        MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/4179427516");
-        adView = view.findViewById(R.id.add_bannerAds);
+        MobileAds.initialize(this, "ca-app-pub-5059411314324031/8151842409");
+        adView = findViewById(R.id.add_bannerAds);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
         homeFrag = new homeFragment();
-        mImageview = view.findViewById(R.id.add_image);
-        mCaption = (TextInputEditText) view.findViewById(R.id.add_txt);
-        mBtnPublish = view.findViewById(R.id.add_btnPublish);
+        mImageview = findViewById(R.id.add_image);
+        mCaption = (TextInputEditText) findViewById(R.id.add_txt);
+        mBtnPublish = findViewById(R.id.add_btnPublish);
         // mStorage = FirebaseStorage.getInstance().getReference();
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         coverImgRef = FirebaseStorage.getInstance().getReference().child("Posts");
@@ -127,16 +115,16 @@ public class addFragment extends Fragment {
                     thumbID = task.getResult().getString("thumb_id");
 
                 } else if (!task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Some error has occured", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(AddPost.this, "Some error has occured", Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), "Some error has occured", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPost.this, "Some error has occured", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         mBtnPublish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,10 +132,10 @@ public class addFragment extends Fragment {
 
 
                 if (mainImageUri == null) {
-                    Toast.makeText(getActivity(), "Please upload a photo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddPost.this, "Please upload a photo", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    final ProgressDialog mprogressDialog = new ProgressDialog(getActivity());
+                    final ProgressDialog mprogressDialog = new ProgressDialog(AddPost.this);
                     mprogressDialog.setMessage("Please wait");
                     mprogressDialog.show();
 
@@ -178,10 +166,15 @@ public class addFragment extends Fragment {
                             mFirebaseFirestore.collection("Posts").document(randomName).set(mdata).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(getActivity(), "Successfully updated", Toast.LENGTH_SHORT).show();
-                                    getActivity().startActivity(new Intent(getActivity(), AccountMain.class));
-                                    getActivity().finish();
+                                    Toast.makeText(AddPost.this, "Successfully Published", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(AddPost.this, AccountMain.class));
+                                    finish();
 
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(AddPost.this, "Some error occureed", Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -197,7 +190,9 @@ public class addFragment extends Fragment {
         });
 
 
-        return view;
+
+
+
     }
 
     private void ImagePicker() {
@@ -207,14 +202,8 @@ public class addFragment extends Fragment {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(16, 9)
-                .start(getContext(), this);
+                .start( AddPost.this);
 
-    }
-
-
-    public static Fragment newInstance() {
-        addFragment addfragment = new addFragment();
-        return addfragment;
     }
 
 
@@ -225,7 +214,7 @@ public class addFragment extends Fragment {
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 mainImageUri = result.getUri();
                 //        Log.v("mkey2", "add image uri: " + mainImageUri.toString());
                 mImageview.setImageURI(mainImageUri);
@@ -233,7 +222,7 @@ public class addFragment extends Fragment {
 
                 File thumb_filePathUri = new File(mainImageUri.getPath());
                 try {
-                    post_Bitmap = new Compressor(getActivity()).setMaxWidth(640).setMaxHeight(480).setQuality(50).compressToBitmap(thumb_filePathUri);
+                    post_Bitmap = new Compressor(this).setMaxWidth(640).setMaxHeight(480).setQuality(50).compressToBitmap(thumb_filePathUri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -246,4 +235,6 @@ public class addFragment extends Fragment {
         }
 
     }
+
 }
+

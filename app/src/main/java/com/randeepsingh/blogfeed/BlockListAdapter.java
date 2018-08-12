@@ -26,11 +26,11 @@ public class BlockListAdapter extends RecyclerView.Adapter<BlockListAdapter.View
 
 
     public static Context context;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth auth;
-    String userID;
+    private  FirebaseFirestore firebaseFirestore;
+    private  FirebaseAuth auth;
+    private String userID;
 
-    ProgressDialog progressDialog;
+    private  ProgressDialog progressDialog;
 
     public BlockListAdapter(ArrayList<Blog> blockList) {
         this.blockList = blockList;

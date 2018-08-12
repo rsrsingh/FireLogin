@@ -20,9 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Register extends AppCompatActivity {
 
-    EditText mUser, mPass, mCpass;
-    Button btnSub;
-    FirebaseAuth mAuth;
+    private EditText mUser, mPass, mCpass;
+    private Button btnSub;
+    private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
 
     @Override

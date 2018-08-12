@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 public class AccountReg extends AppCompatActivity {
 
 
-    Fragment fragment = null;
+    private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

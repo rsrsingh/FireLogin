@@ -47,23 +47,23 @@ import id.zelory.compressor.Compressor;
 public class Accreg_two extends Fragment {
 
 
-    String thumb_url;
-    ImageView imageView;
-    String mUserid;
-    Bitmap cover_Bitmap = null;
-    Uri coverImageUri = null;
-    Fragment fragment = null;
+    private String thumb_url;
+    private ImageView imageView;
+    private String mUserid;
+    private Bitmap cover_Bitmap = null;
+    private Uri coverImageUri = null;
+    private Fragment fragment = null;
     private StorageReference coverImgRef;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
     private StorageReference mStorageRef;
-    Uri cover_downloadUrl = null;
-    Button btnNext, btnUpdate;
-    Bundle bundle2;
-    Bundle bundle;
-    CircleImageView circleImageView;
-    SharedPref sharedPref;
-    FirebaseFirestore firebaseFirestore;
+    private Uri cover_downloadUrl = null;
+    private Button btnNext, btnUpdate;
+    private Bundle bundle2;
+    private Bundle bundle;
+    private CircleImageView circleImageView;
+    private SharedPref sharedPref;
+    private FirebaseFirestore firebaseFirestore;
 
     public Accreg_two() {
         // Required empty public constructor

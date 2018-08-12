@@ -27,10 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NotifRecyclerAdapter extends RecyclerView.Adapter<NotifRecyclerAdapter.ViewHolder> {
 
     public static Context context;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth auth;
-    String userID;
-    ArrayList<Comments> notifList;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private String userID;
+    private ArrayList<Comments> notifList;
 
     public NotifRecyclerAdapter(ArrayList<Comments> notifList) {
         this.notifList = notifList;
