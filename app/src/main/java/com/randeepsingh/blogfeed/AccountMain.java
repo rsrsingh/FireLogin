@@ -3,10 +3,19 @@ package com.randeepsingh.blogfeed;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
@@ -14,11 +23,13 @@ import com.luseen.spacenavigation.SpaceOnClickListener;
 
 public class AccountMain extends AppCompatActivity {
 
-   private Fragment fragment = null;
+    private Fragment fragment = null;
 
-   private SharedPref sharedPref;
+    private SharedPref sharedPref;
+    private FirebaseAuth auth;
+    private String userID;
 
-   private SpaceNavigationView spaceNavigationView;
+    private SpaceNavigationView spaceNavigationView;
     private FirebaseFirestore firebaseFirestore;
 
 
@@ -36,6 +47,20 @@ public class AccountMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_main);
 
+        auth = FirebaseAuth.getInstance();
+        userID = auth.getCurrentUser().getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.getResult().exists()) {
+                    startActivity(new Intent(AccountMain.this, AccountReg.class));
+                }
+            }
+        });
+
+        Log.e("checkey", "acc main onCreate: ");
 
         spaceNavigationView = findViewById(R.id.main_spaceView);
         spaceNavigationView.initWithSaveInstanceState(savedInstanceState);
@@ -46,17 +71,16 @@ public class AccountMain extends AppCompatActivity {
         spaceNavigationView.showIconOnly();
 
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
         fragment = homeFragment.newInstance();
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.acc_frame, fragment);
         fragmentTransaction.commit();
 
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-               startActivity(new Intent(AccountMain.this,AddPost.class));
+                startActivity(new Intent(AccountMain.this, AddPost.class));
 
             }
 

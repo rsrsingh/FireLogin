@@ -57,7 +57,8 @@
         </activity>
         <activity android:name=".UserProfile" />
         <activity android:name=".ForgotPassword" />
-        <activity android:name=".AddPost"></activity>
+        <activity android:name=".AddPost" />
+        <activity android:name=".FollowMain"></activity>
     </application>
 
 </manifest>

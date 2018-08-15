@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.e("checkey", "main onCreate: " );
         txtReg = (TextView) findViewById(R.id.reg);
         mEmail = (AutoCompleteTextView) findViewById(R.id.email);
         mPass = (AutoCompleteTextView) findViewById(R.id.pass);
@@ -102,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseFirestore = FirebaseFirestore.getInstance();
-
                 if (firebaseAuth.getCurrentUser() != null) {
+                    Log.e("checkey", "Main onAuthStateChanged: " );
                     startActivity(new Intent(MainActivity.this, AccountMain.class));
                     finish();
                 }

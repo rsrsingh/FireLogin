@@ -97,6 +97,7 @@ public class profileFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();

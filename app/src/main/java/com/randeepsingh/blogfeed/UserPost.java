@@ -58,6 +58,8 @@ public class UserPost extends AppCompatActivity {
     private CommentRecyclerAdapter commentRecyclerAdapter;
     private ProgressBar progressBarup;
     private String postUserID;
+    private ImageView likeS, likeU;
+    private TextView likeCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +88,17 @@ public class UserPost extends AppCompatActivity {
         userProf = findViewById(R.id.userPost_prof);
         uName = findViewById(R.id.userPost_username);
         time = findViewById(R.id.userPost_time);
+        likeS = findViewById(R.id.userPost_likeS);
+        likeU = findViewById(R.id.userPost_likeUS);
+        likeCount = findViewById(R.id.userPost_likeCount);
+        likeU.setVisibility(View.GONE);
+        likeS.setVisibility(View.GONE);
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         userID = auth.getCurrentUser().getUid();
         progressDialog = new ProgressDialog(this);
+
 
         commentRecyclerAdapter = new CommentRecyclerAdapter(commentList, blogPostID);
         recyclerView.setLayoutManager(new LinearLayoutManager(UserPost.this));
@@ -117,6 +126,76 @@ public class UserPost extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        //likes image hide
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.getResult().exists()) {
+                    likeS.setVisibility(View.VISIBLE);
+                } else {
+                    likeU.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        //likes count
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                if (!documentSnapshots.isEmpty()) {
+                    int count = documentSnapshots.size();
+                    likeCount.setText("" + count + " People liked this");
+                } else {
+                    likeCount.setText("");
+                }
+            }
+        });
+
+
+        //like feature
+        likeU.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("time_stamp", FieldValue.serverTimestamp());
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(UserPost.this, "Liked", Toast.LENGTH_SHORT).show();
+                        likeU.setVisibility(View.GONE);
+                        likeS.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserPost.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        //unlike feature
+        likeS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(UserPost.this, "Unliked", Toast.LENGTH_SHORT).show();
+                        likeS.setVisibility(View.GONE);
+                        likeU.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserPost.this, "Some error occured", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 

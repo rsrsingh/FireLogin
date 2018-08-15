@@ -169,6 +169,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
+        //likes image hide
         firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -182,23 +183,25 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
+
+//likes count
         firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-           if (!documentSnapshots.isEmpty()){
-               int count = documentSnapshots.size();
-               holder.setLikeCount(count);
-           }
-           else{
-             holder.likeCount.setText("");
-           }
+                if (!documentSnapshots.isEmpty()) {
+                    int count = documentSnapshots.size();
+                    holder.setLikeCount(count);
+                } else {
+                    holder.likeCount.setText("");
+                }
             }
         });
 
+        //like feature
         holder.likeU.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String,Object> map =new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 map.put("time_stamp", FieldValue.serverTimestamp());
                 firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -216,6 +219,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
+        //unlike feature
         holder.likeS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -550,7 +554,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             reportMenu.setVisibility(View.GONE);
             dotsMenu.setVisibility(View.GONE);
             likeS = mView.findViewById(R.id.homeRow_likeS);
-            likeCount=mView.findViewById(R.id.homeRow_likeCount);
+            likeCount = mView.findViewById(R.id.homeRow_likeCount);
             likeU = mView.findViewById(R.id.homeRow_likeU);
             likeS.setVisibility(View.GONE);
             likeU.setVisibility(View.GONE);
@@ -583,8 +587,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             caption.setText(value);
         }
 
-        public void setLikeCount(int count){
-            likeCount.setText(""+ count);
+        public void setLikeCount(int count) {
+            likeCount.setText("" + count);
         }
 
     }
