@@ -1,4 +1,4 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,19 +7,24 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,9 +37,15 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.randeepsingh.blogfeed.Blog;
+import com.randeepsingh.blogfeed.Home.AccountMain;
+import com.randeepsingh.blogfeed.Home.Comment_activity;
+import com.randeepsingh.blogfeed.Home.UserProfile;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.SharedPref;
+import com.randeepsingh.blogfeed.postid;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,8 +66,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private String userCheck;
     private String userPass;
     private String userCheck2;
-
+    private String full_name = "", profile_url = "";
     private SharedPref sharedPref;
+    public static final String TAG = "PostRecyclerAdapter";
 
 
     //String username;
@@ -87,8 +99,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final PostRecyclerAdapter.ViewHolder holder, final int position) {
-        holder.setIsRecyclable(false);
-
+        Log.e(TAG, "onBindViewHolder: position; " + position);
         final String blogPostID = postList.get(position).BlogPostID;
         final String postUserID = postList.get(position).getUser_id();
         Log.e("blocking", "onBindViewHolder: post user id at postion: " + position + " " + postUserID);
@@ -103,6 +114,16 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 }
             }
         });
+
+        final String thumb_imageUrl = postList.get(position).getThumb_imageUrl();
+        Date date = postList.get(position).getTime_stamp();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
+        final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
+
+
+        holder.setTime(nowMMDDYYYY);
+        holder.setPostImage(thumb_imageUrl);
+
 
         firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -122,150 +143,121 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
-
-        //hiding reported posts
-        firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(userID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    //    Log.e("reported posts ", "reported post " + blogPostID + " by " + userID);
-                    try {
-                        holder.mView.setVisibility(View.GONE);
-                        postList.remove(position);
-                    } catch (IndexOutOfBoundsException exception) {
-                        //    Log.e("report hide", " post remove exception " + exception.getMessage());
-                    }
-                } else {
-                    holder.mView.setVisibility(View.VISIBLE);
-                    //  Log.e("reported posts ", "no post exists");
-                }
-            }
-        });
-
-
-//hiding blocked posts
-        firebaseFirestore.collection("Users").document(userID).collection("Block").document(postUserID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-
-                if (documentSnapshot.exists()) {
-
-                    String blockedUserID = documentSnapshot.getId();
-                    Log.e("blocking", "onEvent: " + blockedUserID);
-
-                    if (blockedUserID.equals(postUserID)) {
-                        try {
-                            postList.remove(position);
-                            notifyDataSetChanged();
-
-                        } catch (Exception d) {
-                            Log.e("blocked", "onEvent: " + d);
-                        }
-                    } else {
-
-                    }
-                }
-
-            }
-        });
-
-        //likes image hide
-        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        //this will retrieve user data at for each position
+        firebaseFirestore.collection("Users").document(postUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    full_name = task.getResult().getString("full_name");
+                    profile_url = task.getResult().getString("thumb_id");
 
-                if (task.getResult().exists()) {
-                    holder.likeS.setVisibility(View.VISIBLE);
-                } else {
-                    holder.likeU.setVisibility(View.VISIBLE);
-                }
-
-            }
-        });
-
-
-//likes count
-        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()) {
-                    int count = documentSnapshots.size();
-                    holder.setLikeCount(count);
-                } else {
-                    holder.likeCount.setText("");
+                    Log.e(TAG, "onComplete: usersdata" + full_name + " at position : " + position);
+                    holder.setUserText(full_name);
+                    holder.setProfileImage(profile_url);
                 }
             }
         });
+
+
+        //hiding reported posts
+        hideReportPost(blogPostID, holder, position);
+
+        //hiding blocked posts
+        hideBlockPosts(postUserID, position);
+
+
+        //likes image hide
+        likesImageHide(blogPostID, position, userID, holder);
 
         //like feature
-        holder.likeU.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("time_stamp", FieldValue.serverTimestamp());
-                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
-                        holder.likeU.setVisibility(View.GONE);
-                        holder.likeS.setVisibility(View.VISIBLE);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+        likeFeature(blogPostID, holder);
 
         //unlike feature
-        holder.likeS.setOnClickListener(new View.OnClickListener() {
+        unlikeFeature(blogPostID, holder);
+
+        //postDelete feature
+        postDelete(blogPostID, position, holder);
+
+        //commenta
+        commentsFeature(blogPostID, holder);
+        //User profile feature
+        userProfile(blogPostID, holder);
+
+        //report and block feature
+        reportAndBlockFeature(blogPostID,  holder,  position,  postUserID,  profile_url,  full_name);
+
+
+            setAnimation(holder.itemView);
+
+        sharedPref = new SharedPref(context);
+
+    }
+
+    private void setAnimation(View itemView) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+        itemView.startAnimation(animation);
+
+    }
+
+    private void postDelete(String blogPostID, int position, ViewHolder holder) {
+        holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                // Log.v("blogid", "" + blogPostID);
+                final ProgressDialog progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Deleting...");
+                progressDialog.show();
+                firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
-                        holder.likeS.setVisibility(View.GONE);
-                        holder.likeU.setVisibility(View.VISIBLE);
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.getResult().exists()) {
+                            String url = task.getResult().getString("thumb_imageUrl");
+                            final FirebaseStorage postsImageRef = FirebaseStorage.getInstance();
+                            StorageReference photoRef = postsImageRef.getReferenceFromUrl(url);
+                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //                   Log.v("blogtest", "deleted");
+                                }
+                            });
+                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    //                 Log.v("blogtest", "post deleted");
+                                    Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show();
+                                    postList.remove(position);
+                                    notifyDataSetChanged();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                          /*  firebaseFirestore.collection("Users").document(userID).collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                               if (!documentSnapshots.isEmpty()){
+                                   for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
+                                       String postid=doc.getDocument().getString("")
+                                   }
+                               }
+                                }
+                            });*/
+                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
+                        //   Log.v("deletion", "failed to delete post from database");
+                        progressDialog.dismiss();
+                        Toast.makeText(context, "Failed to delete post", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
+    }
 
+    private void userProfile(String blogPostID, ViewHolder holder) {
 
-        final String description_value = postList.get(position).getDescription_value();
-
-        final String thumb_imageUrl = postList.get(position).getThumb_imageUrl();
-        String descValue = postList.get(position).getDescription_value();
-
-
-        final String full_name = postList.get(position).getFull_name();
-        final String profile_url = postList.get(position).getThumb_id();
-
-        holder.setProfileImage(profile_url);
-        holder.setUserText(full_name);
-        holder.setCaption(descValue);
-
-
-        Date date = postList.get(position).getTime_stamp();
-
-
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
-        final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
-
-
-        holder.setTime(nowMMDDYYYY);
-        holder.setPostImage(thumb_imageUrl);
-
-
-        holder.comments.setOnClickListener(new View.OnClickListener() {
+        holder.userView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -278,25 +270,23 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         if (task.getResult().exists()) {
                             userPass = task.getResult().getString("User_id");
 
-                            Intent i = new Intent(context, Comment_activity.class);
-                            i.putExtra("blog_post_id", blogPostID);
-                            i.putExtra("postUserID", userPass);
-                            //     Log.e("mtest6", "onClick: "+userPass );
+                            Intent i = new Intent(context, UserProfile.class);
+                            //               Log.e("mtest8", "onClick: "+userPass );
+                            i.putExtra("post_user_id", userPass);
                             context.startActivity(i);
-
                             progressDialog.dismiss();
                         }
                     }
                 });
 
+
             }
         });
 
 
-        sharedPref = new SharedPref(context);
+    }
 
-
-        //report and block
+    private void reportAndBlockFeature(String blogPostID, ViewHolder holder, int position, String postUserID, String profile_url, String full_name) {
         holder.reportMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -376,7 +366,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
 
-        holder.userView.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void commentsFeature(String blogPostID, ViewHolder holder) {
+        holder.commentCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -388,86 +381,132 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.getResult().exists()) {
                             userPass = task.getResult().getString("User_id");
-
-                            Intent i = new Intent(context, UserProfile.class);
-                            //               Log.e("mtest8", "onClick: "+userPass );
-                            i.putExtra("post_user_id", userPass);
+                            Intent i = new Intent(context, Comment_activity.class);
+                            i.putExtra("blog_post_id", blogPostID);
+                            i.putExtra("postUserID", userPass);
+                            //     Log.e("mtest6", "onClick: "+userPass );
                             context.startActivity(i);
                             progressDialog.dismiss();
                         }
                     }
                 });
-
-
             }
         });
+    }
 
-
-        holder.dotsMenu.setOnClickListener(new View.OnClickListener() {
+    private void unlikeFeature(String blogPostID, ViewHolder holder) {
+        holder.likeS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Log.v("blogid", "" + blogPostID);
-                final ProgressDialog progressDialog = new ProgressDialog(context);
-                progressDialog.setMessage("Deleting...");
-                progressDialog.show();
-                firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.getResult().exists()) {
-                            String url = task.getResult().getString("thumb_imageUrl");
-                            final FirebaseStorage postsImageRef = FirebaseStorage.getInstance();
-                            StorageReference photoRef = postsImageRef.getReferenceFromUrl(url);
-                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //                   Log.v("blogtest", "deleted");
-
-
-                                }
-                            });
-
-                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    //                 Log.v("blogtest", "post deleted");
-                                    Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show();
-                                    postList.remove(position);
-                                    notifyDataSetChanged();
-                                    progressDialog.dismiss();
-                                }
-                            });
-                          /*  firebaseFirestore.collection("Users").document(userID).collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                               if (!documentSnapshots.isEmpty()){
-                                   for (DocumentChange doc: documentSnapshots.getDocumentChanges()){
-                                       String postid=doc.getDocument().getString("")
-                                   }
-                               }
-                                }
-                            });*/
-
-                        }
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
+                        holder.likeS.setVisibility(View.GONE);
+                        holder.likeU.setVisibility(View.VISIBLE);
+                        holder.likeSTV.setVisibility(View.GONE);
+                        holder.likeUTV.setVisibility(View.VISIBLE);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        //   Log.v("deletion", "failed to delete post from database");
-                        progressDialog.dismiss();
-                        Toast.makeText(context, "Failed to delete post", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+    }
 
+    private void likeFeature(String blogPostID, ViewHolder holder) {
+        holder.likeU.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("time_stamp", FieldValue.serverTimestamp());
+                firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(context, "Liked", Toast.LENGTH_SHORT).show();
+                        holder.likeU.setVisibility(View.GONE);
+                        holder.likeS.setVisibility(View.VISIBLE);
+                        holder.likeUTV.setVisibility(View.GONE);
+                        holder.likeSTV.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "Some error occured", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+
+    private void likesImageHide(String blogPostID, int position, String userID, ViewHolder holder) {
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Likes").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()) {
+                    holder.likeS.setVisibility(View.VISIBLE);
+                    holder.likeSTV.setVisibility(View.VISIBLE);
+                } else {
+                    holder.likeU.setVisibility(View.VISIBLE);
+                    holder.likeUTV.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void hideBlockPosts(String postUserID, int position) {
+        firebaseFirestore.collection("Users").document(userID).collection("Block").document(postUserID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+
+                if (documentSnapshot.exists()) {
+
+                    String blockedUserID = documentSnapshot.getId();
+                    Log.e("blocking", "onEvent: " + blockedUserID);
+
+                    if (blockedUserID.equals(postUserID)) {
+                        try {
+                            postList.remove(position);
+                            notifyDataSetChanged();
+
+                        } catch (Exception d) {
+                            Log.e("blocked", "onEvent: " + d);
+                        }
+                    } else {
+
+                    }
+                }
 
             }
         });
 
     }
 
-    private void userBlock(final String userID, final String userCheck) {
-
+    private void hideReportPost(String blogPostID, ViewHolder holder, int position) {
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(userID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    //    Log.e("reported posts ", "reported post " + blogPostID + " by " + userID);
+                    try {
+                        holder.mView.setVisibility(View.GONE);
+                        postList.remove(position);
+                    } catch (IndexOutOfBoundsException exception) {
+                        //    Log.e("report hide", " post remove exception " + exception.getMessage());
+                    }
+                } else {
+                    holder.mView.setVisibility(View.VISIBLE);
+                    //  Log.e("reported posts ", "no post exists");
+                }
+            }
+        });
 
     }
+
 
     private void userReport(final String userID, final int position, final String blogPostID) {
 
@@ -527,84 +566,62 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     @Override
     public int getItemCount() {
-
         return postList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
-        private TextView userView, dateView;
+        private TextView userView, dateView, likeSTV, likeUTV;
         private CircleImageView profile;
         private ImageView imageView;
         private ImageView dotsMenu, reportMenu;
-        private FirebaseAuth mAuth;
-        private ImageView comments;
-        private TextView caption;
+        private CardView commentCard, likeCard;
         private ImageView likeS, likeU;
-        private TextView likeCount;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            profile = mView.findViewById(R.id.homeRow_prof);
+            userView = mView.findViewById(R.id.homeRow_username);
+            dateView = mView.findViewById(R.id.homeRow_time);
+            imageView = mView.findViewById(R.id.homeRow_post);
             dotsMenu = mView.findViewById(R.id.ic_dots);
-            comments = mView.findViewById(R.id.home_comment);
+            commentCard = mView.findViewById(R.id.homeRow_commentcard);
             reportMenu = mView.findViewById(R.id.report_dots);
             reportMenu.setVisibility(View.GONE);
             dotsMenu.setVisibility(View.GONE);
             likeS = mView.findViewById(R.id.homeRow_likeS);
-            likeCount = mView.findViewById(R.id.homeRow_likeCount);
+            likeSTV = mView.findViewById(R.id.homeRow_likeSTV);
+            likeUTV = mView.findViewById(R.id.homeRow_likeUTV);
             likeU = mView.findViewById(R.id.homeRow_likeU);
+            likeUTV.setVisibility(View.GONE);
+            likeSTV.setVisibility(View.GONE);
             likeS.setVisibility(View.GONE);
             likeU.setVisibility(View.GONE);
         }
 
         public void setProfileImage(String profileImage) {
-
-            profile = mView.findViewById(R.id.homeRow_prof);
             Glide.with(context).load(profileImage).into(profile);
-
         }
 
         public void setUserText(String userText) {
-            userView = mView.findViewById(R.id.homeRow_username);
             userView.setText(userText);
         }
 
         public void setTime(StringBuilder time) {
-            dateView = mView.findViewById(R.id.homeRow_time);
             dateView.setText(time);
         }
 
         public void setPostImage(String postImage) {
-            imageView = mView.findViewById(R.id.homeRow_post);
             Glide.with(context).load(postImage).into(imageView);
         }
 
-        public void setCaption(String value) {
-            caption = mView.findViewById(R.id.homeRow_caption);
-            caption.setText(value);
-        }
-
-        public void setLikeCount(int count) {
-            likeCount.setText("" + count);
-        }
 
     }
-
-    public void setFilter(ArrayList<Blog> newPost) {
-
-
-        postList = new ArrayList<>();
-
-
-        postList.addAll(newPost);
-
-        //  Log.v("madapter", "setFilter called  ");
-        notifyDataSetChanged();
-
-    }
-
-
 }

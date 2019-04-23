@@ -1,25 +1,23 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Home;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -28,6 +26,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.randeepsingh.blogfeed.Home.Fragments.homeFragment;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.SharedPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -43,7 +44,7 @@ import id.zelory.compressor.Compressor;
 public class AddPost extends AppCompatActivity {
 
 
-    private AdView adView;
+   // private AdView adView;
     private ImageView mImageview;
     private TextInputEditText mCaption;
     private Button mBtnPublish;
@@ -82,10 +83,11 @@ public class AddPost extends AppCompatActivity {
 
         ImagePicker();
 
-        MobileAds.initialize(this, "ca-app-pub-5059411314324031/8151842409");
+       /* MobileAds.initialize(this, "ca-app-pub-5059411314324031/8151842409");
         adView = findViewById(R.id.add_bannerAds);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
-        adView.loadAd(adRequest);
+        adView.loadAd(adRequest);*/
+
         homeFrag = new homeFragment();
         mImageview = findViewById(R.id.add_image);
         mCaption = (TextInputEditText) findViewById(R.id.add_txt);
@@ -147,7 +149,7 @@ public class AddPost extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            cover_downloadUrl = taskSnapshot.getDownloadUrl();
+                          //  cover_downloadUrl = taskSnapshot.getDownloadUrl();/////////////////////////////////enable this
                             postLink = cover_downloadUrl.toString();
                             postDesc = mCaption.getText().toString().trim();
 

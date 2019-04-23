@@ -1,4 +1,4 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Register;
 
 
 import android.app.Activity;
@@ -7,15 +7,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +33,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.Settings.SettingsFragment;
+import com.randeepsingh.blogfeed.SharedPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -52,19 +56,19 @@ public class Accreg_one extends Fragment {
 
     private CircleImageView circleImageView;
     private StorageReference mStorageRef;
-    private  FirebaseFirestore firebaseFirestore;
+    private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth mAuth;
-    private   String mUserid;
-    private  Fragment fragment = null;
-    private  Bitmap thumb_Bitmap = null;
-    private   Uri mainImageUri = null;
+    private String mUserid;
+    private Fragment fragment = null;
+    private Bitmap thumb_Bitmap = null;
+    private Uri mainImageUri = null;
     private StorageReference thumbImgRef;
-    private  Uri thumb_downloadUrl = null;
+    private Uri thumb_downloadUrl = null;
     private Button btnNext, btnUpdate;
-    private   Bundle bundle;
-    private  FirebaseFirestore mfirebaseFirestore;
-    private  SharedPref sharedPref;
-    private  ProgressBar progressBar;
+    private Bundle bundle;
+    private FirebaseFirestore mfirebaseFirestore;
+    private SharedPref sharedPref;
+    private ProgressBar progressBar;
 
     public Accreg_one() {
         // Required empty public constructor
@@ -272,7 +276,9 @@ public class Accreg_one extends Fragment {
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        thumb_downloadUrl = taskSnapshot.getDownloadUrl();
+
+
+                       // thumb_downloadUrl = taskSnapshot.getDownloadUrl(); ///////////////////////////////////////////////enable this
                         //               Log.v("mkey", "thumb download url: " + thumb_downloadUrl);
 
                         circleImageView.setImageURI(mainImageUri);

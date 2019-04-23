@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 android:background="?attr/fragBack"
-    tools:context=".SettingsFragment">
+    tools:context=".Settings.SettingsFragment">
 
     <Toolbar
         android:id="@+id/settings_toolbar"
@@ -16,7 +16,7 @@ android:background="?attr/fragBack"
         android:titleTextColor="?attr/textcolor"
         app:layout_constraintTop_toTopOf="parent"></Toolbar>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/settings_card1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,10 +40,10 @@ android:background="?attr/fragBack"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/settings_card2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,9 +67,9 @@ android:background="?attr/fragBack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/settings_card3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,9 +93,9 @@ android:background="?attr/fragBack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/settings_card4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,7 +118,7 @@ android:background="?attr/fragBack"
             android:textSize="20dp"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

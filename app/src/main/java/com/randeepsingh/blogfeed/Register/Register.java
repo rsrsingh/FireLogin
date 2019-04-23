@@ -1,26 +1,28 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Register;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.randeepsingh.blogfeed.R;
 
 
 public class Register extends AppCompatActivity {
 
-    private EditText mUser, mPass, mCpass;
+    private TextInputLayout mEmail, mPass, mCpass;
     private Button btnSub;
     private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
@@ -30,10 +32,10 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        mUser = (EditText) findViewById(R.id.reg_user);
-        mPass = (EditText) findViewById(R.id.reg_pass);
-        btnSub = (Button) findViewById(R.id.reg_btn);
-        mCpass = (EditText) findViewById(R.id.reg_cpass);
+        mEmail =  findViewById(R.id.reg_emaillayout);
+        mPass =  findViewById(R.id.reg_Passlayout);
+        btnSub = findViewById(R.id.reg_btnSub);
+        mCpass =  findViewById(R.id.reg_cPasslayout);
         firebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
@@ -51,9 +53,9 @@ public class Register extends AppCompatActivity {
     private void UserReg() {
 
         String email, pass, cpass;
-        email = mUser.getText().toString();
-        pass = mPass.getText().toString();
-        cpass = mCpass.getText().toString();
+        email = mEmail.getEditText().getText().toString();
+        pass = mPass.getEditText().getText().toString();
+        cpass = mCpass.getEditText().getText().toString();
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait");
         progressDialog.show();

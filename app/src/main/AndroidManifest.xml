@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".Welcome.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,43 +22,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".Register.Register"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AccountMain"
+            android:name=".Home.AccountMain"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AccountReg"
+            android:name=".Register.AccountReg"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ThemeActivity" />
-        <activity android:name=".Comment_activity" />
-        <activity android:name=".SettingsMain" />
+        <activity android:name=".Home.Comment_activity" />
+        <activity android:name=".Settings.SettingsMain" />
 
         <service android:name=".NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity android:name=".UserPost">
+        <activity android:name=".Home.UserPost">
             <intent-filter>
                 <action android:name="com.example.randeepsingh.firelogin.TARGETNOTIFICATION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserProfile" />
+        <activity android:name=".Home.UserProfile" />
         <activity android:name=".ForgotPassword" />
-        <activity android:name=".AddPost" />
-        <activity android:name=".FollowMain"></activity>
+        <activity android:name=".Home.AddPost" />
     </application>
 
 </manifest>

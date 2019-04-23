@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".notifFragment">
-
-
+    tools:context=".Home.Fragments.notifFragment">
 
 
     <Toolbar
         android:id="@+id/notif_toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:title="Notifications"
+        android:titleTextColor="?attr/textcolor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:title="Notifications"
-        android:titleTextColor="?attr/textcolor"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <Button
         android:id="@+id/notif_clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
         android:background="@drawable/btn_back"
 
         android:text="Clear"
@@ -42,17 +40,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notif_toolbar" />
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/notif_bannerAds"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-5059411314324031/5707326671"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notif_view"></com.google.android.gms.ads.AdView>
-
 
     <ProgressBar
         android:id="@+id/notif_progress"
@@ -63,15 +50,15 @@
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notif_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notif_bannerAds" />
+        app:layout_constraintTop_toBottomOf="@id/notif_view" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

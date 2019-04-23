@@ -1,18 +1,19 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Home;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.randeepsingh.blogfeed.Adapter.CommentRecyclerAdapter;
+import com.randeepsingh.blogfeed.Comments;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.SharedPref;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +43,7 @@ public class Comment_activity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private  String userID;
-    private  SharedPref sharedPref;
+    private SharedPref sharedPref;
 
     private  ImageView cmntpost;
     private EditText cmntValue;

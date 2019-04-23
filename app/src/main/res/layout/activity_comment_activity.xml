@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     android:background="?attr/fragBack"
-    tools:context=".Comment_activity">
+    tools:context=".Home.Comment_activity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/comments_cord"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -19,15 +19,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/comments_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -45,7 +45,7 @@
                     android:background="?attr/viewcolor"
                     app:layout_constraintTop_toBottomOf="@id/comments_toolbar" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/comment_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -65,9 +65,9 @@
                         android:textColor="?attr/textcolor"
                         android:textSize="20dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/comment_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -78,7 +78,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/comment_card">
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
 
                 <ProgressBar
@@ -91,10 +91,10 @@
                     app:layout_constraintTop_toBottomOf="parent" />
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.design.widget.CoordinatorLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <EditText
         android:id="@+id/comment_ed1"
@@ -123,4 +123,4 @@
         app:layout_constraintTop_toBottomOf="@+id/comments_cord" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

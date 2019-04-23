@@ -1,12 +1,10 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Register;
 
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +14,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.randeepsingh.blogfeed.Home.AccountMain;
+import com.randeepsingh.blogfeed.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +45,11 @@ public class Accreg_three extends Fragment {
     private CircleImageView circleImageView;
     private Bundle bundle;
     private String thumb_url;
-    private  String cover_url;
+    private String cover_url;
     private Button btnNext;
     private String userId;
     private FirebaseAuth mAuth;
-    private  FirebaseFirestore mfirebaseFirestore;
+    private FirebaseFirestore mfirebaseFirestore;
     private EditText username;
     private ProgressBar progressBar;
 
@@ -108,6 +112,8 @@ public class Accreg_three extends Fragment {
             @Override
             public void onClick(View view) {
                 updateDetails();
+
+
             }
         });
 
@@ -158,6 +164,32 @@ public class Accreg_three extends Fragment {
                 progressDialog.dismiss();
 
                 Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final Map<String, Object> map2 = new HashMap<>();
+        map2.put("time_stamp", FieldValue.serverTimestamp());
+        mfirebaseFirestore.collection("Users").document(userId).collection("Following").document(userId).set(map2).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+        mfirebaseFirestore.collection("Users").document(userId).collection("Following").document("wm2fqzaT11XhmdHNdnwIcByXVkm1").set(map2).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Some error occured", Toast.LENGTH_SHORT).show();
             }
         });
 

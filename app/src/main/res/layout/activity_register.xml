@@ -1,67 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
-    android:background="#353535"
-    tools:context=".Register"
-    android:padding="20dp"
+    tools:context=".Register.Register"
     >
 
-    <android.support.constraint.ConstraintLayout
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/main_background" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-      >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_foreground"
+            app:layout_constraintBottom_toTopOf="@id/reg_emaillayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="10dp"
+            android:transitionName="logo_transition"/>
 
-        <EditText
-            android:id="@+id/reg_user"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@drawable/input_back"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:textColor="#000000"
-            android:textSize="20dp" />
-
-        <EditText
-            android:id="@+id/reg_pass"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/input_back"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@id/reg_user" />
-
-        <EditText
-            android:id="@+id/reg_cpass"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/input_back"
-            android:hint="Confirm Password"
-            android:inputType="textPassword"
-            android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@id/reg_pass" />
-
-        <Button
-            android:id="@+id/reg_btn"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg_emaillayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/input_back"
+            android:padding="6dp"
+            android:transitionName="email_transition"
+            app:layout_constraintBottom_toTopOf="@id/reg_Passlayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="4dp"
+                android:textSize="20dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg_Passlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/input_back"
+            android:padding="6dp"
+            android:transitionName="password_transition"
+            app:layout_constraintBottom_toTopOf="@id/reg_cPasslayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg_Pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:textSize="20dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reg_cPasslayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/input_back"
+            android:padding="6dp"
+            app:layout_constraintBottom_toTopOf="@id/reg_btnSub"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reg_cPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="Confirm Password"
+                android:inputType="textPassword"
+                android:padding="4dp"
+                android:textSize="20dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/reg_btnSub"
+            android:layout_width="180dp"
+            android:layout_height="55dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/btn_back"
             android:text="Register"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@id/reg_cpass" />
-    </android.support.constraint.ConstraintLayout>
+            android:transitionName="btnLogin_transition"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

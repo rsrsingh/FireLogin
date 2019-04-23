@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 public class SharedPref {
     SharedPreferences sharedPreferences;
 
-    SharedPref(Context context) {
+    public SharedPref(Context context) {
         sharedPreferences = context.getSharedPreferences("filename", Context.MODE_PRIVATE);
     }
 

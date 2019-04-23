@@ -1,4 +1,4 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Register;
 
 
 import android.app.ProgressDialog;
@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +13,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +29,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.Settings.SettingsFragment;
+import com.randeepsingh.blogfeed.SharedPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -251,7 +255,7 @@ public class Accreg_two extends Fragment {
                 thumb_filePath.putBytes(thumb_byte).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        cover_downloadUrl = taskSnapshot.getDownloadUrl();
+                      //  cover_downloadUrl = taskSnapshot.getDownloadUrl();//////////////enable this
                         //              Log.v("Accreg_two", "cover download url: " + cover_downloadUrl);
 
                         imageView.setImageURI(coverImageUri);

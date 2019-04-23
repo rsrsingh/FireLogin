@@ -1,13 +1,14 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Settings;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -15,6 +16,9 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.randeepsingh.blogfeed.Adapter.BlockListAdapter;
+import com.randeepsingh.blogfeed.Blog;
+import com.randeepsingh.blogfeed.R;
 
 import java.util.ArrayList;
 

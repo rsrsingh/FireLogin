@@ -1,6 +1,6 @@
 package com.randeepsingh.blogfeed;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class UserID {
     public String UserID;

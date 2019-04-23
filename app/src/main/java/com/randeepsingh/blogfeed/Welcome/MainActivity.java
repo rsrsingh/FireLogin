@@ -1,18 +1,20 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Welcome;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,6 +25,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +33,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.randeepsingh.blogfeed.ForgotPassword;
+import com.randeepsingh.blogfeed.Home.AccountMain;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.Register.AccountReg;
+import com.randeepsingh.blogfeed.Register.Register;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +45,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AutoCompleteTextView mEmail, mPass;
+    private TextInputLayout mEmail, mPass;
     private Button btnLogin;
     private FirebaseAuth mAuth;
     private TextView txtReg;
@@ -49,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressDialog progressDialog;
+    private ImageView logoImg;
 
     @Override
     protected void onStart() {
@@ -61,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.e("checkey", "main onCreate: " );
-        txtReg = (TextView) findViewById(R.id.reg);
-        mEmail = (AutoCompleteTextView) findViewById(R.id.email);
-        mPass = (AutoCompleteTextView) findViewById(R.id.pass);
+        Log.e("checkey", "main onCreate: ");
+        txtReg = findViewById(R.id.main_reg);
+        mEmail = findViewById(R.id.main_emaillayout);
+        mPass = findViewById(R.id.main_passlayout);
         btnLogin = (Button) findViewById(R.id.loginbtn);
-        forgotPass = findViewById(R.id.main_forgotPass);
+        forgotPass = findViewById(R.id.main_forgotPassTV);
         googlebtn = findViewById(R.id.main_googlebtn);
+        logoImg=findViewById(R.id.main_logo);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Signing In...");
-
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View view) {
                 Log.v("GoogleSignIn", "btn Clicked");
-
-
                 signIn();
             }
         });
@@ -95,7 +102,13 @@ public class MainActivity extends AppCompatActivity {
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ForgotPassword.class));
+                Intent sharedIntent = new Intent(MainActivity.this, ForgotPassword.class);
+                Pair[] pairs = new Pair[3];
+                pairs[0] = new Pair<View, String>(mEmail, "email_transition");
+                pairs[1] = new Pair<View, String>(btnLogin, "btnLogin_transition");
+                pairs[2] = new Pair<View, String>(logoImg, "logo_transition");
+                ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,pairs);
+                startActivity(sharedIntent,options.toBundle());
             }
         });
 
@@ -104,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseFirestore = FirebaseFirestore.getInstance();
                 if (firebaseAuth.getCurrentUser() != null) {
-                    Log.e("checkey", "Main onAuthStateChanged: " );
+                    Log.e("checkey", "Main onAuthStateChanged: ");
                     startActivity(new Intent(MainActivity.this, AccountMain.class));
                     finish();
                 }
@@ -117,10 +130,18 @@ public class MainActivity extends AppCompatActivity {
                 startSignIn();
             }
         });
+
         txtReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Register.class));
+                Intent sharedIntent = new Intent(MainActivity.this, Register.class);
+                Pair[] pairs = new Pair[4];
+                pairs[0] = new Pair<View, String>(mEmail, "email_transition");
+                pairs[1] = new Pair<View, String>(mPass, "password_transition");
+                pairs[2] = new Pair<View, String>(btnLogin, "btnLogin_transition");
+                pairs[3] = new Pair<View, String>(logoImg, "logo_transition");
+                ActivityOptions options=ActivityOptions.makeSceneTransitionAnimation(MainActivity.this,pairs);
+                startActivity(sharedIntent,options.toBundle());
             }
         });
 
@@ -129,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSignIn() {
 
-        String email = mEmail.getText().toString();
-        String pass = mPass.getText().toString();
+        String email = mEmail.getEditText().getText().toString();
+        String pass = mPass.getEditText().getText().toString();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(pass)) {
 

@@ -1,18 +1,19 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Home;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.randeepsingh.blogfeed.Adapter.ProfileRecyclerAdapter;
+import com.randeepsingh.blogfeed.ProfileViewList;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.SharedPref;
+import com.randeepsingh.blogfeed.postid;
 
 import java.util.ArrayList;
 import java.util.HashMap;

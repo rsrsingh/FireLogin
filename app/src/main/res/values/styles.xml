@@ -16,27 +16,29 @@
         <item name="spaceItem">#787878</item>
         <item name="spaceSelected">#000000</item>
 
-
-
         <item name="android:windowAnimationStyle">@null</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <!-- Dark mode theme. -->
     <style name="DarkTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#9f9f9f</item>
-        <item name="colorPrimaryDark">#181818</item>
-        <item name="colorAccent">#878787</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#000000</item>
 
-        <item name="cardbackground">#161616</item>
+        <item name="cardbackground">#1F1F1F</item>
         <item name="textcolor">#ffffff</item>
-        <item name="actioncolor">#333333</item>
+        <item name="actioncolor">#000000</item>
         <item name="viewcolor">#a9a9a9</item>
-        <item name="fragBack">#1e1e1e</item>
+        <item name="fragBack">#000000</item>
         <item name="spaceItem">#bababa</item>
         <item name="spaceSelected">#ffffff</item>
 
-
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowAnimationStyle">@null</item>
 
     </style>

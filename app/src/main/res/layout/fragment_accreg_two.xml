@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Accreg_two">
-<android.support.constraint.ConstraintLayout
+    tools:context=".Register.Accreg_two">
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/fragBack">
@@ -80,5 +80,5 @@
         app:layout_constraintRight_toLeftOf="parent" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

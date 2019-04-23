@@ -1,12 +1,7 @@
-package com.randeepsingh.blogfeed;
+package com.randeepsingh.blogfeed.Home.Fragments;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,17 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.randeepsingh.blogfeed.Adapter.SearchRecyclerAdapter;
+import com.randeepsingh.blogfeed.R;
+import com.randeepsingh.blogfeed.SharedPref;
+import com.randeepsingh.blogfeed.User;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +40,7 @@ public class SearchFragment extends Fragment {
 
 
 
-    private AdView adView;
+   // private AdView adView;
     private SharedPref sharedPref;
     private RecyclerView recyclerView;
     private SearchRecyclerAdapter searchRecyclerAdapter;
@@ -68,11 +70,11 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/1095479460");
+      /*  MobileAds.initialize(getActivity(), "ca-app-pub-5059411314324031/1095479460");
         adView = view.findViewById(R.id.search_bannerAds);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         adView.loadAd(adRequest);
-
+*/
 
         searchList = new ArrayList<>();
         textInputEditText = view.findViewById(R.id.searchFrag_ed1);
