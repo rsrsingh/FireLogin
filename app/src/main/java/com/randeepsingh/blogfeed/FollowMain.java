@@ -1,3 +1,4 @@
+/*
 package com.randeepsingh.blogfeed;
 
 import android.support.v7.app.AppCompatActivity;
@@ -11,3 +12,4 @@ public class FollowMain extends AppCompatActivity {
         setContentView(R.layout.activity_follow_main);
     }
 }
+*/

@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressDialog progressDialog;
     private ImageView logoImg;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onStart() {
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         txtReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                
                 Intent sharedIntent = new Intent(MainActivity.this, Register.class);
                 Pair[] pairs = new Pair[4];
                 pairs[0] = new Pair<View, String>(mEmail, "email_transition");
